@@ -2,6 +2,7 @@ package com.company.projects;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,14 +10,14 @@ import org.apache.logging.log4j.Logger;
 public class MobileApp extends ProjectForUsers {
     private boolean isWorkingNow;
     private int appSize;
-    private String[] whereCanBeFind;
+    private TreeSet<String> whereCanBeFind;
     private final Logger logger = LogManager.getLogger(ProjectForUsers.class);
 
 
     public MobileApp() {
     }
 
-    public MobileApp(Date dateOfCreation, int countOfUsers, int markOfUsers, boolean isWorkingNow, int appSize, String[] whereCanBeFind) {
+    public MobileApp(Date dateOfCreation, int countOfUsers, int markOfUsers, boolean isWorkingNow, int appSize, TreeSet<String> whereCanBeFind) {
         super(dateOfCreation, countOfUsers, markOfUsers);
         this.isWorkingNow = isWorkingNow;
         this.appSize = appSize;
@@ -39,19 +40,24 @@ public class MobileApp extends ProjectForUsers {
         this.appSize = appSize;
     }
 
-    public String[] getWhereCanBeFind() {
+    public TreeSet<String> getWhereCanBeFind() {
         return whereCanBeFind;
     }
 
-    public void setWhereCanBeFind(String[] whereCanBeFind) {
+    public void setWhereCanBeFind(TreeSet<String> whereCanBeFind) {
         this.whereCanBeFind = whereCanBeFind;
+    }
+
+    @Override
+    public void launch() {
+        logger.info("MobileApp is launching...");
     }
 
     @Override
     public int hashCode() {
         int result = super.getDateOfCreation().hashCode();
         result = 31 * result + super.getCountOfUsers() + super.getMarkOfUsers();
-        result = 31 * result + getAppSize() + getWhereCanBeFind().length;
+        result = 31 * result + getAppSize() + getWhereCanBeFind().size();
         return result;
     }
 
@@ -65,7 +71,7 @@ public class MobileApp extends ProjectForUsers {
 
         if (super.getCountOfUsers() == app.getCountOfUsers() && super.getMarkOfUsers() == app.getMarkOfUsers() &&
                 super.getDateOfCreation() != null && super.getDateOfCreation().equals(app.getDateOfCreation()) &&
-                getWhereCanBeFind() != null && Arrays.equals(getWhereCanBeFind(), app.getWhereCanBeFind())
+                getWhereCanBeFind() != null && getWhereCanBeFind().equals(app.getWhereCanBeFind())
                 && getAppSize() == app.getAppSize()) {
             return true;
         }
@@ -75,13 +81,7 @@ public class MobileApp extends ProjectForUsers {
 
     @Override
     public String toString() {
-        return "MobileApp - Date: " + super.getDateOfCreation().toString() + ", Count: " + super.getCountOfUsers() +
-                ", Mark: " + super.getMarkOfUsers() + " AppSize: " + getAppSize() + ", You can find in: " +
-                Arrays.toString(getWhereCanBeFind());
-    }
-
-    @Override
-    public void launch() {
-        logger.debug("MobileApp is launching...");
+        return  super.toString() + ", AppSize: " + getAppSize() + ", Where can be found: " +
+                getWhereCanBeFind().toString();
     }
 }

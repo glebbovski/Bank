@@ -5,17 +5,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class Driver extends Human {
-
+public class Driver extends Employee {
     private boolean hasDriverLicense;
     private final Logger logger = LogManager.getLogger(Driver.class);
 
     public Driver() {
-
+        this.setPosition("Driver");
     }
 
-    public Driver(String name, String surname, boolean hasDriverLicense) throws WrongNameOrSurnameException {
-        super(name, surname);
+    public Driver(String name, String surname, int salary, boolean hasDriverLicense) throws WrongNameOrSurnameException {
+        super(name, surname, "Driver", salary);
         this.hasDriverLicense = hasDriverLicense;
     }
 
@@ -27,11 +26,11 @@ public class Driver extends Human {
         this.hasDriverLicense = hasDriverLicense;
     }
 
+
+
     @Override
     public int hashCode() {
-        int result = super.getName().hashCode();
-        result = 31 * result + super.getSurname().hashCode();
-        result = 31 * result + 31 * 99;
+        int result = super.hashCode() * 31 + 29;
         return result;
     }
 
@@ -54,17 +53,7 @@ public class Driver extends Human {
 
     @Override
     public String toString() {
-        return "Driver - Name: " + getName() + ", Surname: " + getSurname() + ", HasDriverLicense: " +
-                isHasDriverLicense();
+        return super.toString() + ", hasDriverLicense: " + isHasDriverLicense();
     }
 
-    @Override
-    public void role() {
-        logger.debug("This is a driver!");
-    }
-
-    @Override
-    public void openAccount() {
-        logger.debug("I am Driver! I can not open an account in Bank! :(");
-    }
 }

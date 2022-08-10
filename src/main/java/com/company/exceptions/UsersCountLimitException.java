@@ -8,7 +8,7 @@ public class UsersCountLimitException extends RuntimeException {
     private static final Logger logger = LogManager.getLogger(UsersCountLimitException.class);
 
     public UsersCountLimitException() {
-        logger.info("!!!!!UsersCountLimitException!!!!!!");
+        logger.error(this.getStackTrace());
     }
 
     public UsersCountLimitException(String str) {

@@ -63,13 +63,11 @@ public class Website extends ProjectForUsers {
 
     @Override
     public String toString() {
-        return "Website information: DateOfCreation: " + getDateOfCreation().toString() +
-                ", CountOfUsers: " + getCountOfUsers() + ", MarkOfUsers: " + getMarkOfUsers() +
-                ", Domen: " + getDomen() + ", isWorkingNow: " + isWorkingNow();
+        return super.toString() + ", Domen: " + getDomen() + ", isWorkingNow: " + isWorkingNow();
     }
 
     @Override
     public void launch() {
-        logger.debug("Website is launching...");
+        logger.info("Website is launching...");
     }
 }

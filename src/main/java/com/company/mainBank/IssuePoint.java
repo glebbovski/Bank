@@ -1,16 +1,18 @@
 package com.company.mainBank;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.TreeSet;
 
 public class IssuePoint {
     private String address;
-    private Date[] addmissionDays;
+    private TreeSet<Date> addmissionDays;
 
     public IssuePoint() {
     }
 
-    public IssuePoint(String address, Date[] addmissionDays) {
+    public IssuePoint(String address, TreeSet<Date> addmissionDays) {
         this.address = address;
         this.addmissionDays = addmissionDays;
     }
@@ -23,18 +25,18 @@ public class IssuePoint {
         this.address = address;
     }
 
-    public Date[] getAddmissionDays() {
+    public TreeSet<Date> getAddmissionDays() {
         return addmissionDays;
     }
 
-    public void setAddmissionDays(Date[] addmissionDays) {
+    public void setAddmissionDays(TreeSet<Date> addmissionDays) {
         this.addmissionDays = addmissionDays;
     }
 
     @Override
     public int hashCode() {
         int result = getAddress().hashCode();
-        result = result * 31 + getAddmissionDays().length;
+        result = result * 31 + getAddmissionDays().size();
         return result;
     }
 
@@ -47,7 +49,7 @@ public class IssuePoint {
         IssuePoint point = (IssuePoint) obj;
 
         if (getAddress() != null && getAddress().equals(point.getAddress()) &&
-                getAddmissionDays() != null && Arrays.equals(getAddmissionDays(), point.getAddmissionDays())) {
+                getAddmissionDays() != null && getAddmissionDays().equals(point.getAddmissionDays())) {
             return true;
         }
 
@@ -57,6 +59,6 @@ public class IssuePoint {
 
     @Override
     public String toString() {
-        return "IssuePoint - Address: " + getAddress() + ", Addmission Days: " + Arrays.toString(getAddmissionDays());
+        return "IssuePoint - Address: " + getAddress() + ", Addmission Days: " + getAddmissionDays().toString();
     }
 }

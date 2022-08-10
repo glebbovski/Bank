@@ -8,7 +8,7 @@ public class WrongNameOrSurnameException extends Exception {
     private static final Logger logger = LogManager.getLogger(WrongNameOrSurnameException.class);
 
     public WrongNameOrSurnameException() {
-        logger.info("!!!!!WrongNameOrSurnameException!!!!!");
+        logger.error(this.getStackTrace());
     }
 
     public WrongNameOrSurnameException(String str) {

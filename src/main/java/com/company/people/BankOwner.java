@@ -1,12 +1,12 @@
 package com.company.people;
 
 import com.company.exceptions.WrongNameOrSurnameException;
+import com.company.interfaces.Openable;
 import com.company.mainBank.MainSafe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BankOwner extends Human {
-
+public class BankOwner extends Human implements Openable {
     private boolean isUkrainian;
     private final Logger logger = LogManager.getLogger(BankOwner.class);
 
@@ -25,6 +25,31 @@ public class BankOwner extends Human {
 
     public void setUkrainian(boolean ukrainian) {
         isUkrainian = ukrainian;
+    }
+
+    @Override
+    public void role() {
+        logger.info("This is BankOwner");
+    }
+
+    @Override
+    public void openAccount() {
+        logger.info("Am I need to open Account???");
+    }
+
+    @Override
+    public void openDeposit() {
+        logger.info("I do not need to open Deposit");
+    }
+
+    @Override
+    public void openCredit() {
+        logger.info("I do not need to open Credit");
+    }
+
+    @Override
+    public void openCard() {
+        logger.info("I do not need to open Card");
     }
 
     @Override
@@ -56,15 +81,5 @@ public class BankOwner extends Human {
     @Override
     public String toString() {
         return "BankOwner - Name: " + getName() + ", Surname: " + getSurname() + ", Ukrainian: " + isUkrainian();
-    }
-
-    @Override
-    public void role() {
-        logger.debug("This is BankOwner");
-    }
-
-    @Override
-    public void openAccount() {
-        logger.debug("Am I need to open account???");
     }
 }

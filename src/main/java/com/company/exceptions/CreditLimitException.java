@@ -9,7 +9,7 @@ public class CreditLimitException extends RuntimeException {
     private static final Logger logger = LogManager.getLogger(CreditLimitException.class);
 
     public CreditLimitException() {
-        logger.info("!!!!!CreditiLimitException!!!!!");
+        logger.error(this.getStackTrace());
     }
 
     public CreditLimitException(String str) {

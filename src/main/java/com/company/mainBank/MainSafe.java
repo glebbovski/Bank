@@ -55,6 +55,21 @@ public class MainSafe implements Transportable, Lockable {
     }
 
     @Override
+    public void move() {
+        logger.info("Now I am on my way to Toronto");
+    }
+
+    @Override
+    public boolean lock(MainSafe mainSafe) {
+        if (mainSafe.isGoldInside()) {
+            logger.info("Sorry, I need to be closed, because I want to protect my gold inside! *Closing*");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public int hashCode() {
         int result = getCurrentMoneySum();
         result = result * 31 + getSafeWidth();
@@ -83,20 +98,5 @@ public class MainSafe implements Transportable, Lockable {
     public String toString() {
         return "Main Safe - Current Money: " + getCurrentMoneySum() + ", Width: " + getSafeWidth() +
                 ", Length: " + getSafeLength();
-    }
-
-    @Override
-    public void move() {
-        logger.debug("Now I am on my way to Toronto");
-    }
-
-    @Override
-    public boolean lock(MainSafe mainSafe) {
-        if (mainSafe.isGoldInside()) {
-            logger.debug("Sorry, I need to be closed, because I want to protect my gold inside! *Closing*");
-            return true;
-        } else {
-            return false;
-        }
     }
 }

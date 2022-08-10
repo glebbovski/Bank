@@ -1,16 +1,18 @@
 package com.company.people;
 
 import com.company.exceptions.WrongNameOrSurnameException;
-import com.company.tasks.BankAccount;
-import com.company.tasks.Card;
-import com.company.tasks.Contribution;
-import com.company.tasks.Credit;
-import com.company.tasks.Deposit;
+import com.company.interfaces.Openable;
+import com.company.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import  com.company.tasks.*;
 
-public class User extends Human {
+import java.util.Calendar;
+import java.util.Date;
 
+public class User extends Human implements Openable {
+    private static int id = 0;
+    private final int currentId;
     private String phoneNumber;
     private BankAccount bankAccount;
     private Credit credit;
@@ -20,6 +22,8 @@ public class User extends Human {
     private final Logger logger = LogManager.getLogger(User.class);
 
     public User() {
+        User.id++;
+        this.currentId = User.id;
     }
 
     public User(String name, String surname, String phoneNumber, BankAccount bankAccount, Credit credit,
@@ -31,6 +35,8 @@ public class User extends Human {
         this.card = card;
         this.contribution = contribution;
         this.deposit = deposit;
+        User.id++;
+        this.currentId = User.id;
     }
 
     public String getPhoneNumber() {
@@ -81,12 +87,56 @@ public class User extends Human {
         this.deposit = deposit;
     }
 
+    public int getCurrentId() {
+        return this.currentId;
+    }
+
+    @Override
+    public void role() {
+        logger.info("This is User");
+    }
+
+    @Override
+    public void openAccount() {
+        logger.info("I can open account in Bank if I did not do this before! :)");
+        if (this.bankAccount == null) {
+            this.bankAccount = new BankAccount(Currency.EURO);
+        }
+    }
+
+    @Override
+    public void openDeposit() {
+        logger.info("I can open deposit in Bank if I did not do this before! :)");
+        if (this.deposit == null) {
+            this.deposit = new Deposit(20_000, this.getName());
+        }
+    }
+
+    @Override
+    public void openCredit() {
+        logger.info("I can open credit in Bank if I did not do this before and if i did not exceed the limit! :)");
+        if (this.credit == null) {
+            this.credit = new Credit(90_000, new Date());
+        }
+    }
+
+    @Override
+    public void openCard() {
+        logger.info("I can open card in Bank if I did not do this before! :)");
+        if (this.card == null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.YEAR, 3); // card for 3 years
+            this.card = new Card(this.getName(), calendar.getTime());
+        }
+    }
+
     @Override
     public int hashCode() {
         int result = super.getName().hashCode() + super.getSurname().hashCode();
         result = result * 31 + getPhoneNumber().hashCode() + getBankAccount().hashCode();
         result = 31 * result + getCard().hashCode() + getCredit().hashCode();
-        result = 31 * result + getContribution().hashCode() + getDeposit().hashCode();
+        result = 31 * result + getContribution().hashCode() + getDeposit().hashCode() + getCurrentId();
         return result;
     }
 
@@ -105,7 +155,8 @@ public class User extends Human {
                 getCard() != null && getCard().equals(user.getCard()) &&
                 getCredit() != null && getCredit().equals(user.getCredit()) &&
                 getContribution() != null && getContribution().equals(user.getContribution()) &&
-                getDeposit() != null && getDeposit().equals(user.getDeposit())) {
+                getDeposit() != null && getDeposit().equals(user.getDeposit()) &&
+                getCurrentId() == user.getCurrentId()) {
             return true;
         }
 
@@ -117,16 +168,7 @@ public class User extends Human {
         return "User Information - Name: " + super.getName() + ", Surname: " + super.getSurname() +
                 "number: " + getPhoneNumber() + ", bankAccount: " + getBankAccount() + ", card: " + getCard() +
                 ", credit: " + getCredit() + ", contribution: " + getContribution() + ", deposit: " +
-                getDeposit();
+                getDeposit() + ", Id: " + getCurrentId();
     }
 
-    @Override
-    public void role() {
-        logger.debug("This is User");
-    }
-
-    @Override
-    public void openAccount() {
-        logger.debug("I can open an account in Bank! :)");
-    }
 }

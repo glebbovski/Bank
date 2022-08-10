@@ -57,11 +57,41 @@ public abstract class ProjectForUsers {
     public abstract void launch();
 
     public void closing() {
-        logger.debug("Goodbye!");
+        logger.info("Goodbye!");
     }
 
     private boolean checkCountOfUsers(int countOfUsers) {
         return countOfUsers > 45_000;
     }
 
+    @Override
+    public int hashCode() {
+        int result = getDateOfCreation().hashCode();
+        result = 31 * result + getCountOfUsers() + getMarkOfUsers();
+        result = result * 29;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        if (!(obj instanceof ProjectForUsers)) return false;
+
+        ProjectForUsers project = (ProjectForUsers) obj;
+
+        if (getDateOfCreation() != null && getDateOfCreation().equals(project.getDateOfCreation()) &&
+                getMarkOfUsers() == project.getMarkOfUsers() && getCountOfUsers() == project.getCountOfUsers()) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectForUsers – DateOfCreation: " + getDateOfCreation().toString() +
+                ", CountOfUsers: " + getCountOfUsers() + ", MarkOfUsers: " + getMarkOfUsers();
+    }
 }

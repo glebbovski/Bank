@@ -2,14 +2,18 @@ package com.company.tasks;
 
 public class Contribution {
     private int contributionAmount;
-    private int uniqueNumber;
+    private static int uniqueNumber;
+    private final int currentNumber;
 
     public Contribution() {
+        Contribution.uniqueNumber++;
+        this.currentNumber = Contribution.uniqueNumber;
     }
 
-    public Contribution(int contributionAmount, int uniqueNumber) {
+    public Contribution(int contributionAmount) {
         this.contributionAmount = contributionAmount;
-        this.uniqueNumber = uniqueNumber;
+        Contribution.uniqueNumber++;
+        this.currentNumber = Contribution.uniqueNumber;
     }
 
     public int getContributionAmount() {
@@ -20,18 +24,14 @@ public class Contribution {
         this.contributionAmount = contributionAmount;
     }
 
-    public int getUniqueNumber() {
-        return uniqueNumber;
-    }
-
-    public void setUniqueNumber(int uniqueNumber) {
-        this.uniqueNumber = uniqueNumber;
+    public int getCurrentNumber() {
+        return currentNumber;
     }
 
     @Override
     public int hashCode() {
         int result = getContributionAmount();
-        result = 31 * result + getUniqueNumber();
+        result = 31 * result + getCurrentNumber();
         return result;
     }
 
@@ -44,7 +44,7 @@ public class Contribution {
 
         Contribution contribution = (Contribution) obj;
 
-        if (getUniqueNumber() == contribution.getUniqueNumber()
+        if (getCurrentNumber() == contribution.getCurrentNumber()
                 && getContributionAmount() == contribution.getContributionAmount()) {
             return true;
         }
@@ -55,6 +55,6 @@ public class Contribution {
 
     @Override
     public String toString() {
-        return "Contribution - Number: " + getUniqueNumber() + ", Amount: " + getContributionAmount();
+        return "Contribution - Number: " + getCurrentNumber() + ", Amount: " + getContributionAmount();
     }
 }

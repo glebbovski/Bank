@@ -5,25 +5,21 @@ import com.company.interfaces.Chipped;
 import java.util.Date;
 
 public class Card implements Chipped {
-    private int uniqueNumber;
+    private static int uniqueNumber = 0;
+    private final int currentNumber;
     private String owner;
     private Date validity;
 
     public Card() {
+        Card.uniqueNumber++;
+        this.currentNumber = Card.uniqueNumber;
     }
 
-    public Card(int uniqueNumber, String owner, Date validity) {
-        this.uniqueNumber = uniqueNumber;
+    public Card(String owner, Date validity) {
+        Card.uniqueNumber++;
         this.owner = owner;
         this.validity = validity;
-    }
-
-    public int getUniqueNumber() {
-        return uniqueNumber;
-    }
-
-    public void setUniqueNumber(int uniqueNumber) {
-        this.uniqueNumber = uniqueNumber;
+        this.currentNumber = Card.uniqueNumber;
     }
 
     public String getOwner() {
@@ -42,9 +38,13 @@ public class Card implements Chipped {
         this.validity = validity;
     }
 
+    public int getCurrentNumber() {
+        return currentNumber;
+    }
+
     @Override
     public int hashCode() {
-        int result = getUniqueNumber();
+        int result = getCurrentNumber();
         result = 31 * result + getOwner().hashCode();
         result = 31 * result + getValidity().hashCode();
         return result;
@@ -60,8 +60,8 @@ public class Card implements Chipped {
         Card card = (Card) obj;
 
         if (getOwner() != null && getOwner().equals(card.getOwner()) &&
-                getValidity() != null && getValidity().equals(card.getValidity()) &&
-                getUniqueNumber() == card.getUniqueNumber()) {
+                getValidity() != null && getValidity().equals(card.getValidity())
+                && getCurrentNumber() == card.getCurrentNumber()) {
             return true;
         }
 
@@ -71,7 +71,7 @@ public class Card implements Chipped {
     @Override
     public String toString() {
         return "Card - Validity: " + getValidity().toString() + ", Owner: " + getOwner() + ", Number: " +
-                getUniqueNumber();
+                getCurrentNumber();
     }
 
     @Override

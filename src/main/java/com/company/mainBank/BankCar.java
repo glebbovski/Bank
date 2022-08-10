@@ -8,32 +8,20 @@ import org.apache.logging.log4j.Logger;
 
 
 public class BankCar extends Car {
-    private int uniqueNumber;
     private boolean isPassenger;
     private boolean isArmored;
-    private Driver driver;
     private final Logger logger = LogManager.getLogger(BankCar.class);
 
     public BankCar() {
 
     }
 
-    public BankCar(String color, String mark, int uniqueNumber, boolean isPassenger, boolean isArmored, Driver driver) {
-        super(color, mark);
-        this.uniqueNumber = uniqueNumber;
+    public BankCar(String color, String mark, int year, boolean isPassenger, boolean isArmored) {
+        super(color, mark, year);
         this.isPassenger = isPassenger;
         this.isArmored = isArmored;
-        this.driver = driver;
     }
 
-
-    public int getUniqueNumber() {
-        return uniqueNumber;
-    }
-
-    public void setUniqueNumber(int uniqueNumber) {
-        this.uniqueNumber = uniqueNumber;
-    }
 
     public boolean isPassenger() {
         return isPassenger;
@@ -51,19 +39,12 @@ public class BankCar extends Car {
         isArmored = armored;
     }
 
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
     @Override
     public int hashCode() {
         int result = super.getColor().hashCode();
         result = 31 * result + super.getMark().hashCode();
-        result = 31 * result + getUniqueNumber();
+        result = 31 * result + getCurrentNumber() + getDriver().hashCode();
+        result = 31 * result + getYear();
         return result;
     }
 
@@ -77,8 +58,9 @@ public class BankCar extends Car {
 
         if (getColor() != null && getColor().equals(car.getColor()) &&
                 getMark() != null && getMark().equals(car.getMark()) &&
-                getUniqueNumber() == car.getUniqueNumber() && isArmored() == car.isArmored() &&
-                isPassenger() == car.isPassenger()) {
+                getCurrentNumber() == car.getCurrentNumber() && isArmored() == car.isArmored() &&
+                isPassenger() == car.isPassenger() && getDriver() != null && getDriver() == car.getDriver() &&
+                getYear() == car.getYear()) {
             return true;
         }
 
@@ -87,22 +69,19 @@ public class BankCar extends Car {
 
     @Override
     public String toString() {
-        return "BankCar - Color: " + getColor() + ", Mark: " + getMark() + ", Number: " + getUniqueNumber() +
-                ", isPass: " + isPassenger() + ", isArm: " + isArmored();
+        return "BankCar - Color: " + getColor() + ", Mark: " + getMark() + ", Number: " + getCurrentNumber() +
+                ", isPass: " + isPassenger() + ", isArm: " + isArmored() + ", Driver: " + getDriver() +
+                ", Year: " + getYear();
     }
 
     @Override
     public void style() {
-        logger.debug("Bank-style");
+        logger.info("BankCar-style");
     }
 
     @Override
     public void drive(Driver driver) {
-        logger.debug("I am driver and I can drive the car! My name is " + driver.getName());
+        logger.info("I am driver and I can drive the BankCar! My name is " + driver.getName());
     }
 
-    @Override
-    public void drift(Driver driver, int meters) {
-        logger.debug("My record of drifting is " + meters + " meters. What about you, " + driver.getName() + "?");
-    }
 }

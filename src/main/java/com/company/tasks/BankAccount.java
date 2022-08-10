@@ -2,14 +2,18 @@ package com.company.tasks;
 
 public class BankAccount {
     private Currency currency;
-    private int uniqueNumber;
+    private static int uniqueNumber = 0;
+    private final int currentNumber;
 
     public BankAccount() {
+        BankAccount.uniqueNumber++;
+        this.currentNumber = BankAccount.uniqueNumber;
     }
 
-    public BankAccount(Currency currency, int uniqueNumber) {
+    public BankAccount(Currency currency) {
         this.currency = currency;
-        this.uniqueNumber = uniqueNumber;
+        BankAccount.uniqueNumber++;
+        this.currentNumber = BankAccount.uniqueNumber;
     }
 
     public Currency getCurrency() {
@@ -20,18 +24,15 @@ public class BankAccount {
         this.currency = currency;
     }
 
-    public int getUniqueNumber() {
-        return uniqueNumber;
+    public int getCurrentNumber() {
+        return this.currentNumber;
     }
 
-    public void setUniqueNumber(int uniqueNumber) {
-        this.uniqueNumber = uniqueNumber;
-    }
 
     @Override
     public int hashCode() {
         int result = getCurrency().hashCode();
-        result = result * 31 + getUniqueNumber();
+        result = result * 31 + getCurrentNumber();
         return result;
     }
 
@@ -44,7 +45,7 @@ public class BankAccount {
         BankAccount account = (BankAccount) obj;
 
         if (getCurrency() != null && getCurrency().equals(account.getCurrency()) &&
-                getUniqueNumber() == account.getUniqueNumber()) {
+                getCurrentNumber() == account.getCurrentNumber()) {
             return true;
         }
 
@@ -53,6 +54,6 @@ public class BankAccount {
 
     @Override
     public String toString() {
-        return "BankAccount - Currency: " + getCurrency().toString() + ", Number: " + getUniqueNumber();
+        return "BankAccount - Currency: " + getCurrency().toString() + ", Number: " + getCurrentNumber();
     }
 }

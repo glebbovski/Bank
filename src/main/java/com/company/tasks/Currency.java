@@ -1,15 +1,21 @@
 package com.company.tasks;
 
-public class Currency {
+public enum Currency {
+
+    USD("Dollar", "USA", 15, 20),
+    HRIVNYA("HRIVNYA", "Ukraine", 20, 15),
+    EURO("EURO", "Europe", 17, 18),
+    FRANCS("FRANCS", "UK", 21, 19);
+
     private String name;
     private String country;
     private int banknoteWidth;
     private int banknoteLength;
 
-    public Currency() {
+    Currency() {
     }
 
-    public Currency(String name, String country, int banknoteWidth, int banknoteLength) {
+    Currency(String name, String country, int banknoteWidth, int banknoteLength) {
         this.name = name;
         this.country = country;
         this.banknoteWidth = banknoteWidth;
@@ -47,7 +53,7 @@ public class Currency {
     public void setBanknoteLength(int banknoteLength) {
         this.banknoteLength = banknoteLength;
     }
-
+/*
     @Override
     public int hashCode() {
         int result = getCountry().hashCode();
@@ -74,7 +80,7 @@ public class Currency {
 
         return false;
     }
-
+*/
     @Override
     public String toString() {
         return "Currency - Name: " + getName() + ", Country: " + getCountry() + ", Width: " + getBanknoteWidth() +
