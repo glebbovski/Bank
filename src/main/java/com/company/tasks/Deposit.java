@@ -1,15 +1,15 @@
 package com.company.tasks;
 
+import com.company.people.User;
+
 public class Deposit {
     private int depositAmount;
-    private String ownerOfDeposit;
 
     public Deposit() {
     }
 
-    public Deposit(int depositAmount, String ownerOfDeposit) {
+    public Deposit(int depositAmount) {
         this.depositAmount = depositAmount;
-        this.ownerOfDeposit = ownerOfDeposit;
     }
 
     public int getDepositAmount() {
@@ -20,18 +20,11 @@ public class Deposit {
         this.depositAmount = depositAmount;
     }
 
-    public String getOwnerOfDeposit() {
-        return ownerOfDeposit;
-    }
 
-    public void setOwnerOfDeposit(String ownerOfDeposit) {
-        this.ownerOfDeposit = ownerOfDeposit;
-    }
 
     @Override
     public int hashCode() {
         int result = getDepositAmount();
-        result = result * 31 + getOwnerOfDeposit().hashCode();
         return result * 31;
     }
 
@@ -43,9 +36,7 @@ public class Deposit {
 
         Deposit deposit = (Deposit) obj;
 
-        if (getOwnerOfDeposit() != null &&
-                getOwnerOfDeposit().equals(deposit.getOwnerOfDeposit()) &&
-                getDepositAmount() == deposit.getDepositAmount()) {
+        if (getDepositAmount() == deposit.getDepositAmount()) {
             return true;
         }
 
@@ -54,6 +45,6 @@ public class Deposit {
 
     @Override
     public String toString() {
-        return "Deposit - Owner: " + getOwnerOfDeposit() + ", Amount: " + getDepositAmount();
+        return "Deposit{amount=" + getDepositAmount() + '}';
     }
 }

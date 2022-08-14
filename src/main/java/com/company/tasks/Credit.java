@@ -66,7 +66,7 @@ public class Credit {
 
     @Override
     public String toString() {
-        return "Credit - Current: " + getCurrentCredit() + ", Last Payment: " + getLastPaymentDate().toString();
+        return "Credit{current=" + getCurrentCredit() + ", lastPayment=\'" + getLastPaymentDate().toString() + "\'}";
     }
 
     private boolean exceedingLimit(int currentCredit) {

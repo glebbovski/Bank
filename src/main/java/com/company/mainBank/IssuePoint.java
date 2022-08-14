@@ -59,6 +59,6 @@ public class IssuePoint {
 
     @Override
     public String toString() {
-        return "IssuePoint - Address: " + getAddress() + ", Addmission Days: " + getAddmissionDays().toString();
+        return "IssuePoint{address=" + getAddress() + ", addmissionDays=" + getAddmissionDays().toString() + '}';
     }
 }

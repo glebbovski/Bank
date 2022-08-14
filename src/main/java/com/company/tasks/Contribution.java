@@ -55,6 +55,6 @@ public class Contribution {
 
     @Override
     public String toString() {
-        return "Contribution - Number: " + getCurrentNumber() + ", Amount: " + getContributionAmount();
+        return "Contribution{number=" + getCurrentNumber() + ", amount=" + getContributionAmount() + '}';
     }
 }

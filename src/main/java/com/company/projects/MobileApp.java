@@ -81,7 +81,7 @@ public class MobileApp extends ProjectForUsers {
 
     @Override
     public String toString() {
-        return  super.toString() + ", AppSize: " + getAppSize() + ", Where can be found: " +
-                getWhereCanBeFind().toString();
+        return  super.toString() + ", appSize=" + getAppSize() + ", WhereCanBeFound=" +
+                getWhereCanBeFind().toString() + '}';
     }
 }

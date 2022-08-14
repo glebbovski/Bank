@@ -98,8 +98,8 @@ public abstract class Employee extends Human implements Openable {
 
     @Override
     public String toString() {
-        return "Empoloyee - Position: " + getPosition() + ", Name: " + super.getName() + ", Surname: " +
-                super.getSurname() + ", Salary: " + getSalary() + ", Id: " + getCurrentId();
+        return "Empoloyee{position=" + getPosition() + ", name=\'" + super.getName() + "\', surname=\'" +
+                super.getSurname() + "\', salary=" + getSalary() + ", id=" + getCurrentId() + '}';
 
     }
 }

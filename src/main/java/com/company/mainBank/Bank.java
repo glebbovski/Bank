@@ -56,6 +56,14 @@ public class Bank {
         this.users = users;
     }
 
+    public void addUser(User user) {
+        this.users.add(user);
+    }
+
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+    }
+
     public ArrayList<Employee> getEmployees() {
         return employees;
     }
@@ -146,10 +154,13 @@ public class Bank {
 
     @Override
     public String toString() {
-        return "Bank - Name: " + getBankName() + ", Users: " + getUsers().toString() + ", Employees: "
-                + getEmployees().toString() + ", MainSafe: " + getMainSafe() + ", BankCars: "
-                + getBankCars().toString() + ", Website: " + getWebsite() + ", MobileApp: "
-                + getMobileApp() + ", IssuePoints: " + getIssuePoints().toString();
+        return "Bank{name=\'" + getBankName() + "\', users=" + getUsers().toString() +
+                ", employees="
+                + getEmployees().toString() + ", mainSafe=" + getMainSafe() +
+                ", bankCars="
+                + getBankCars().toString() + ", website=" + getWebsite() +
+                ", mobileApp="
+                + getMobileApp() + ", issuePoints=" + getIssuePoints().toString() + '}';
     }
 
 }

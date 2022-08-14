@@ -61,7 +61,7 @@ public abstract class ProjectForUsers {
     }
 
     private boolean checkCountOfUsers(int countOfUsers) {
-        return countOfUsers > 45_000;
+        return countOfUsers > 500_000;
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class ProjectForUsers {
 
     @Override
     public String toString() {
-        return "ProjectForUsers – DateOfCreation: " + getDateOfCreation().toString() +
-                ", CountOfUsers: " + getCountOfUsers() + ", MarkOfUsers: " + getMarkOfUsers();
+        return "ProjectForUsers{dateOfCreation=\'" + getDateOfCreation().toString() +
+                "\', countOfUsers=" + getCountOfUsers() + ", markOfUsers=" + getMarkOfUsers();
     }
 }

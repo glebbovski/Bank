@@ -54,6 +54,6 @@ public class BankAccount {
 
     @Override
     public String toString() {
-        return "BankAccount - Currency: " + getCurrency().toString() + ", Number: " + getCurrentNumber();
+        return "BankAccount{currency=" + getCurrency().toString() + ", number=" + getCurrentNumber() + '}';
     }
 }

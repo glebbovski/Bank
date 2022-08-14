@@ -36,6 +36,11 @@ public class Website extends ProjectForUsers {
     }
 
     @Override
+    public void launch() {
+        logger.info("Website is launching...");
+    }
+
+    @Override
     public int hashCode() {
         int result = getDateOfCreation().hashCode();
         result = 31 * result + getCountOfUsers() + getMarkOfUsers();
@@ -63,11 +68,7 @@ public class Website extends ProjectForUsers {
 
     @Override
     public String toString() {
-        return super.toString() + ", Domen: " + getDomen() + ", isWorkingNow: " + isWorkingNow();
+        return super.toString() + ", domen=\'" + getDomen() + "\', isWorkingNow=" + isWorkingNow() + '}';
     }
 
-    @Override
-    public void launch() {
-        logger.info("Website is launching...");
-    }
 }

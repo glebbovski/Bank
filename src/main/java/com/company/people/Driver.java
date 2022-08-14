@@ -53,7 +53,7 @@ public class Driver extends Employee {
 
     @Override
     public String toString() {
-        return super.toString() + ", hasDriverLicense: " + isHasDriverLicense();
+        return super.toString() + ", hasDriverLicense=" + isHasDriverLicense() + '}';
     }
 
 }

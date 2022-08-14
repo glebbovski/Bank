@@ -1,5 +1,6 @@
 package com.company.people;
 
+import com.company.exceptions.PhoneNumberException;
 import com.company.exceptions.WrongNameOrSurnameException;
 import com.company.interfaces.Openable;
 import com.company.tasks.*;
@@ -9,6 +10,8 @@ import  com.company.tasks.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class User extends Human implements Openable {
     private static int id = 0;
@@ -29,6 +32,10 @@ public class User extends Human implements Openable {
     public User(String name, String surname, String phoneNumber, BankAccount bankAccount, Credit credit,
                 Card card, Contribution contribution, Deposit deposit) throws WrongNameOrSurnameException {
         super(name, surname);
+
+        if (!checkPhoneNumber(phoneNumber)) {
+            throw new PhoneNumberException("Wrong Phone Number");
+        }
         this.phoneNumber = phoneNumber;
         this.bankAccount = bankAccount;
         this.credit = credit;
@@ -44,6 +51,9 @@ public class User extends Human implements Openable {
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        if (!checkPhoneNumber(phoneNumber)) {
+            throw new PhoneNumberException("Wrong Phone Number");
+        }
         this.phoneNumber = phoneNumber;
     }
 
@@ -108,7 +118,7 @@ public class User extends Human implements Openable {
     public void openDeposit() {
         logger.info("I can open deposit in Bank if I did not do this before! :)");
         if (this.deposit == null) {
-            this.deposit = new Deposit(20_000, this.getName());
+            this.deposit = new Deposit(20_000);
         }
     }
 
@@ -127,8 +137,17 @@ public class User extends Human implements Openable {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.add(Calendar.YEAR, 3); // card for 3 years
-            this.card = new Card(this.getName(), calendar.getTime());
+            this.card = new Card(calendar.getTime());
         }
+    }
+
+    public boolean checkPhoneNumber(String phoneNumber) {
+        String regx = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
+                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
+        Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.find();
     }
 
     @Override
@@ -165,10 +184,10 @@ public class User extends Human implements Openable {
 
     @Override
     public String toString() {
-        return "User Information - Name: " + super.getName() + ", Surname: " + super.getSurname() +
-                "number: " + getPhoneNumber() + ", bankAccount: " + getBankAccount() + ", card: " + getCard() +
-                ", credit: " + getCredit() + ", contribution: " + getContribution() + ", deposit: " +
-                getDeposit() + ", Id: " + getCurrentId();
+        return "User{name=\'" + super.getName() + "\', surname=\'" + super.getSurname() +
+                "\', number=" + getPhoneNumber() + ", bankAccount=" + getBankAccount() + ", card=" + getCard() +
+                ", credit=" + getCredit() + ", contribution=" + getContribution() + ", deposit=" +
+                getDeposit() + ", id=" + getCurrentId() + '}';
     }
 
 }

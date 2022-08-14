@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BankOwner extends Human implements Openable {
+
     private boolean isUkrainian;
     private final Logger logger = LogManager.getLogger(BankOwner.class);
 
@@ -80,6 +81,6 @@ public class BankOwner extends Human implements Openable {
 
     @Override
     public String toString() {
-        return "BankOwner - Name: " + getName() + ", Surname: " + getSurname() + ", Ukrainian: " + isUkrainian();
+        return "BankOwner{name=\'" + getName() + "\', surname=\'" + getSurname() + "\', ukrainian=" + isUkrainian() + '}';
     }
 }

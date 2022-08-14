@@ -114,7 +114,7 @@ public abstract class Car implements Driveable {
 
     @Override
     public String toString() {
-        return "Car – Number: " + getCurrentNumber() + ", Color: " + getColor() + ", Mark: " + getMark() +
-                ", Driver: " + getDriver() + ", Year: " + getYear();
+        return "Car{number=" + getCurrentNumber() + ", color=\'" + getColor() + "\', mark=" + getMark() +
+                ", driver=" + getDriver() + ", year=" + getYear() + '}';
     }
 }

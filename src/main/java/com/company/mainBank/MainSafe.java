@@ -96,7 +96,7 @@ public class MainSafe implements Transportable, Lockable {
 
     @Override
     public String toString() {
-        return "Main Safe - Current Money: " + getCurrentMoneySum() + ", Width: " + getSafeWidth() +
-                ", Length: " + getSafeLength();
+        return "Main Safe{currentMoney=" + getCurrentMoneySum() + ", width=" + getSafeWidth() +
+                ", length=" + getSafeLength() + '}';
     }
 }

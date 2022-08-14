@@ -40,6 +40,16 @@ public class BankCar extends Car {
     }
 
     @Override
+    public void style() {
+        logger.info("BankCar-style");
+    }
+
+    @Override
+    public void drive(Driver driver) {
+        logger.info("I am driver and I can drive the BankCar! My name is " + driver.getName());
+    }
+
+    @Override
     public int hashCode() {
         int result = super.getColor().hashCode();
         result = 31 * result + super.getMark().hashCode();
@@ -69,19 +79,10 @@ public class BankCar extends Car {
 
     @Override
     public String toString() {
-        return "BankCar - Color: " + getColor() + ", Mark: " + getMark() + ", Number: " + getCurrentNumber() +
-                ", isPass: " + isPassenger() + ", isArm: " + isArmored() + ", Driver: " + getDriver() +
-                ", Year: " + getYear();
+        return "BankCar{color=\'" + getColor() + "\', mark=" + getMark() + ", number=" + getCurrentNumber() +
+                ", isPass=" + isPassenger() + ", isArm=" + isArmored() + ", driver=" + getDriver() +
+                ", year=" + getYear() + '}';
     }
 
-    @Override
-    public void style() {
-        logger.info("BankCar-style");
-    }
-
-    @Override
-    public void drive(Driver driver) {
-        logger.info("I am driver and I can drive the BankCar! My name is " + driver.getName());
-    }
 
 }

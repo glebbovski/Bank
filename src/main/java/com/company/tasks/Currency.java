@@ -83,7 +83,7 @@ public enum Currency {
 */
     @Override
     public String toString() {
-        return "Currency - Name: " + getName() + ", Country: " + getCountry() + ", Width: " + getBanknoteWidth() +
-                ", Length: " + getBanknoteLength();
+        return "Currency{name=\'" + getName() + "\', country=\'" + getCountry() + "\', width=" + getBanknoteWidth() +
+                ", length=" + getBanknoteLength() + '}';
     }
 }

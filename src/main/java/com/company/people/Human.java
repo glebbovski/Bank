@@ -85,6 +85,6 @@ public abstract class Human  {
 
     @Override
     public String toString() {
-        return "Human – Name: " + getName() + ", Surname: " + getSurname();
+        return "Human{name=\'" + getName() + "\', surname=\'" + getSurname() + "\'}";
     }
 }
