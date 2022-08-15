@@ -37,7 +37,7 @@ public class Main {
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 3);
 
-        User user = new User("Artem", "Filippov", "101 555 0125", new BankAccount(Currency.FRANCS),
+        User user = new User("Artem", "Filippov", "+380995371428", new BankAccount(Currency.FRANCS),
                 new Credit(20_000, new Date()), null, null, null);
         user.setCard(new Card(calendar.getTime()));
         user.setContribution(new Contribution(35));
@@ -51,7 +51,7 @@ public class Main {
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 7);
 
-        user = new User("Denys", "Avilov", "202 555 0126", new BankAccount(Currency.HRIVNYA),
+        user = new User("Denys", "Avilov", "+380 44 537 1428", new BankAccount(Currency.HRIVNYA),
                 new Credit(90_000, new Date()), null, null, null);
         user.setCard(new Card(calendar.getTime()));
         user.setContribution(new Contribution(19));
@@ -66,7 +66,7 @@ public class Main {
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 11);
 
-        user = new User("Maria", "Romaneno", "202 555 0125", new BankAccount(Currency.USD),
+        user = new User("Maria", "Romanenko", "+380505371428", new BankAccount(Currency.USD),
                 null, null, null, null);
         user.setCard(new Card(calendar.getTime()));
         user.setContribution(new Contribution(19));
