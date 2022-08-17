@@ -10,9 +10,14 @@ import com.company.projects.MobileApp;
 import com.company.projects.Website;
 import com.company.tasks.*;
 import com.company.tasks.Currency;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -378,6 +383,22 @@ public class Main {
 
         Main main = new Main();
         main.run();
+
+        File file = new File("README_BANK.txt");
+
+        String content = null;
+        try {
+            content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+
+            int index = content.indexOf(" ");
+            String word = content.substring(0, index);
+            System.out.println(StringUtils.countMatches(content, word));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 }
