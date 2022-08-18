@@ -10,14 +10,16 @@ import org.apache.logging.log4j.Logger;
 public class BankCar extends Car {
     private boolean isPassenger;
     private boolean isArmored;
+    private BankCarMarks bankCarMark;
     private final Logger logger = LogManager.getLogger(BankCar.class);
 
     public BankCar() {
 
     }
 
-    public BankCar(String color, String mark, int year, boolean isPassenger, boolean isArmored) {
-        super(color, mark, year);
+    public BankCar(String color, BankCarMarks bankCarMark, int year, boolean isPassenger, boolean isArmored) {
+        super(color, year);
+        this.bankCarMark = bankCarMark;
         this.isPassenger = isPassenger;
         this.isArmored = isArmored;
     }
@@ -39,6 +41,14 @@ public class BankCar extends Car {
         isArmored = armored;
     }
 
+    public BankCarMarks getBankCarMark() {
+        return bankCarMark;
+    }
+
+    public void setBankCarMark(BankCarMarks bankCarMark) {
+        this.bankCarMark = bankCarMark;
+    }
+
     @Override
     public void style() {
         logger.info("BankCar-style");
@@ -52,7 +62,7 @@ public class BankCar extends Car {
     @Override
     public int hashCode() {
         int result = super.getColor().hashCode();
-        result = 31 * result + super.getMark().hashCode();
+        result = 31 * result;
         result = 31 * result + getCurrentNumber() + getDriver().hashCode();
         result = 31 * result + getYear();
         return result;
@@ -67,10 +77,10 @@ public class BankCar extends Car {
         BankCar car = (BankCar) obj;
 
         if (getColor() != null && getColor().equals(car.getColor()) &&
-                getMark() != null && getMark().equals(car.getMark()) &&
                 getCurrentNumber() == car.getCurrentNumber() && isArmored() == car.isArmored() &&
                 isPassenger() == car.isPassenger() && getDriver() != null && getDriver() == car.getDriver() &&
-                getYear() == car.getYear()) {
+                getYear() == car.getYear() && getBankCarMark() != null &&
+                getBankCarMark().equals(car.getBankCarMark())) {
             return true;
         }
 
@@ -79,7 +89,7 @@ public class BankCar extends Car {
 
     @Override
     public String toString() {
-        return "BankCar{color=\'" + getColor() + "\', mark=" + getMark() + ", number=" + getCurrentNumber() +
+        return "BankCar{color=\'" + getColor() + "\', mark=" + getBankCarMark() + ", number=" + getCurrentNumber() +
                 ", isPass=" + isPassenger() + ", isArm=" + isArmored() + ", driver=" + getDriver() +
                 ", year=" + getYear() + '}';
     }

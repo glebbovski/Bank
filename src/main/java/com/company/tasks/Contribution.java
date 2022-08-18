@@ -1,5 +1,7 @@
 package com.company.tasks;
 
+import com.company.interfaces.Openable;
+
 public class Contribution {
     private int contributionAmount;
     private static int uniqueNumber;

@@ -51,23 +51,28 @@ public abstract class Employee extends Human implements Openable {
     }
 
     @Override
-    public void openAccount() {
+    public void addBankAccount() {
         logger.info("I can not open account in Bank :(");
     }
 
     @Override
-    public void openDeposit() {
+    public void addDeposit() {
         logger.info("I can not open deposit in Bank :(");
     }
 
     @Override
-    public void openCredit() {
+    public void addCredit() {
         logger.info("I can not open deposit in Bank :(");
     }
 
     @Override
-    public void openCard() {
+    public void addCard() {
         logger.info("I can not open card in Bank :(");
+    }
+
+    @Override
+    public void addContribution() {
+        logger.info("I can not add Contrinution :(");
     }
 
     @Override

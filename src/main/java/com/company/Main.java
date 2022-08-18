@@ -1,10 +1,7 @@
 package com.company;
 
 import com.company.exceptions.WrongNameOrSurnameException;
-import com.company.mainBank.Bank;
-import com.company.mainBank.BankCar;
-import com.company.mainBank.IssuePoint;
-import com.company.mainBank.MainSafe;
+import com.company.mainBank.*;
 import com.company.people.*;
 import com.company.projects.MobileApp;
 import com.company.projects.Website;
@@ -28,12 +25,14 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void dash(String str) {
-        logger.info("---------------------------------------------------------------------");
+        logger.info("--------------------------------------------------------------------------------------" +
+                "----------------------------------------------------");
         logger.info("\t\t\t\t\t\t\t" + str);
-        logger.info("---------------------------------------------------------------------");
+        logger.info("---------------------------------------------------------------------------------------" +
+                "---------------------------------------------------");
     }
 
-    public LinkedList<User> addUsersToBank() throws WrongNameOrSurnameException {
+    public LinkedList<User> addUsersToBank() throws WrongNameOrSurnameException, ParseException {
 
         LinkedList<User> users = new LinkedList<>();
 
@@ -44,7 +43,7 @@ public class Main {
 
         User user = new User("Artem", "Filippov", "+380995371428", new BankAccount(Currency.FRANCS),
                 new Credit(20_000, new Date()), null, null, null);
-        user.setCard(new Card(calendar.getTime()));
+        user.addCard();
         user.setContribution(new Contribution(35));
         user.setDeposit(new Deposit(0));
 
@@ -58,7 +57,7 @@ public class Main {
 
         user = new User("Denys", "Avilov", "+380 44 537 1428", new BankAccount(Currency.HRIVNYA),
                 new Credit(90_000, new Date()), null, null, null);
-        user.setCard(new Card(calendar.getTime()));
+        user.addCard();
         user.setContribution(new Contribution(19));
         user.setDeposit(new Deposit(99_000));
 
@@ -73,7 +72,7 @@ public class Main {
 
         user = new User("Maria", "Romanenko", "+380505371428", new BankAccount(Currency.USD),
                 null, null, null, null);
-        user.setCard(new Card(calendar.getTime()));
+        user.addCard();
         user.setContribution(new Contribution(19));
 
         users.add(user);
@@ -84,7 +83,6 @@ public class Main {
 
         return users;
     }
-
 
     public ArrayList<Employee> addEmployeesToBank() throws WrongNameOrSurnameException {
         ArrayList<Employee> employees = new ArrayList<>();
@@ -103,13 +101,12 @@ public class Main {
         return employees;
     }
 
-
     public LinkedList<BankCar> addBankCarsToBank() {
         LinkedList<BankCar> bankCars = new LinkedList<>();
 
-        bankCars.add(new BankCar("Blue", "Toyota", 2002, true, true));
-        bankCars.add(new BankCar("Red", "Mazda", 2003, true, true));
-        bankCars.add(new BankCar("Black", "Mercedes", 2018, false, true));
+        bankCars.add(new BankCar("Blue", BankCarMarks.MERCEDES, 2002, true, true));
+        bankCars.add(new BankCar("Red", BankCarMarks.NISSAN, 2003, true, true));
+        bankCars.add(new BankCar("Black", BankCarMarks.VOLKSWAGEN, 2018, false, true));
 
         return bankCars;
     }
@@ -142,74 +139,19 @@ public class Main {
         return issuePoints;
     }
 
-    public BankAccount addBankAccount() {
-        BankAccount bankAccount = new BankAccount();
-        Scanner scanner = new Scanner(System.in);
+    public void bankInfo(File file) {
+        String content = null;
+        try {
+            content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
-        boolean flag = true;
+            int index = content.indexOf(" ");
+            String word = content.substring(0, index);
+            logger.info(StringUtils.countMatches(content, word));
 
-        while (flag) {
-
-            logger.info("Which currency do you want to choose? 1 - EURO, 2 - USD, 3 - HRIVNYA, 4 - FRANCS");
-            int cur = Integer.parseInt(scanner.nextLine()); // ADD TRY -------
-
-            switch (cur) {
-                case 1:
-                    bankAccount.setCurrency(Currency.EURO);
-                    flag = false;
-                    break;
-                case 2:
-                    bankAccount.setCurrency(Currency.USD);
-                    flag = false;
-                    break;
-                case 3:
-                    bankAccount.setCurrency(Currency.HRIVNYA);
-                    flag = false;
-                    break;
-                case 4:
-                    bankAccount.setCurrency(Currency.FRANCS);
-                    flag = false;
-                    break;
-                default:
-                    logger.info("Please, change the number!");
-                    break;
-            }
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-
-        return bankAccount;
     }
-
-    public Card addCard() throws ParseException {
-        Card card = new Card();
-        Scanner scanner = new Scanner(System.in);
-        logger.info("Please, enter dateValidity: ");
-        String str = scanner.nextLine();
-        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(str);
-        card.setValidity(date);
-        return card;
-    }
-
-    public Contribution addContribution() {
-        Contribution contribution = new Contribution();
-        logger.info("Please, enter a contributionAmount: ");
-        Scanner scanner = new Scanner(System.in);
-        int count = Integer.parseInt(scanner.nextLine());
-        contribution.setContributionAmount(count);
-        return contribution;
-    }
-
-    public Deposit addDeposit() {
-        Deposit deposit = new Deposit();
-        logger.info("Please, enter a depositAmount: ");
-        Scanner scanner = new Scanner(System.in);
-        int count = Integer.parseInt(scanner.nextLine());
-        deposit.setDepositAmount(count);
-        return deposit;
-
-    }
-
 
     public void run() throws WrongNameOrSurnameException, ParseException {
         dash("Bank Program");
@@ -246,7 +188,7 @@ public class Main {
         logger.info(bank.toString());
 
         dash("START WORKING...");
-        dash("DO YOU WANNA TO BE OUR USER? yes or IF YOU WANT TO LEAVE JUST SKIP OR ENTER \"exit\")");
+        dash("DO YOU WANNA TO BE OUR USER? yes OR IF YOU ARE ALREADY OUR USER ENTER \"already\" (IF YOU WANT TO LEAVE JUST SKIP OR ENTER \"exit\")");
 
         Scanner scanner = new Scanner(System.in);
         String str = scanner.nextLine();
@@ -254,13 +196,16 @@ public class Main {
         str = str.replaceAll("\\s+", "");
 
         boolean flag = false;
-
+        boolean flagAlreadyUser = false;
         boolean flagForSomethingWrong = false;
 
         switch (str) {
             case "exit":
             case "":
                 dash("OK GOODBYE");
+                break;
+            case "already":
+                flagAlreadyUser = true;
                 break;
             case "yes":
                 flag = true;
@@ -298,7 +243,7 @@ public class Main {
 
             if (flag) {
                 if (str.equals("yes")) {
-                    user.setBankAccount(addBankAccount());
+                    user.addBankAccount();
                 }
 
                 logger.info("Do you want to add a card? yes or no");
@@ -318,7 +263,7 @@ public class Main {
 
                 if (flag) {
                     if (str.equals("yes")) {
-                        user.setCard(addCard());
+                        user.addCard();
                     }
 
                     logger.info("Do you want to add contribution? yes or no");
@@ -338,9 +283,8 @@ public class Main {
 
                     if (flag) {
                         if (str.equals("yes")) {
-                            user.setContribution(addContribution());
+                            user.addContribution();
                         }
-
                         logger.info("Do you want to add deposit? yes or no");
                         flag = false;
                         str = scanner.nextLine();
@@ -357,7 +301,7 @@ public class Main {
                         }
                         if (flag) {
                             if (str.equals("yes")) {
-                                user.setDeposit(addDeposit());
+                                user.addDeposit();
                             }
 
 
@@ -375,29 +319,28 @@ public class Main {
             }
         }
 
+        if(flagAlreadyUser) {
+            logger.info("Please, enter your ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            boolean present = bank.getUsers().stream().filter(o -> o.getCurrentId() == id).findFirst().isPresent();
+            if (present) {
+                User user = bank.getUsers().get(id - 1);
+                logger.info(user.toString());
+            } else {
+                logger.info("You are a liar, the user with this ID has not yet been registered!");
+            }
 
+            dash("GOODBYE!");
+
+        }
 
     }
 
     public static void main(String[] args) throws WrongNameOrSurnameException, ParseException {
 
         Main main = new Main();
+        main.bankInfo(new File("README_BANK.txt"));
         main.run();
-
-        File file = new File("README_BANK.txt");
-
-        String content = null;
-        try {
-            content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-
-            int index = content.indexOf(" ");
-            String word = content.substring(0, index);
-            System.out.println(StringUtils.countMatches(content, word));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
 
     }

@@ -34,23 +34,28 @@ public class BankOwner extends Human implements Openable {
     }
 
     @Override
-    public void openAccount() {
+    public void addBankAccount() {
         logger.info("Am I need to open Account???");
     }
 
     @Override
-    public void openDeposit() {
+    public void addDeposit() {
         logger.info("I do not need to open Deposit");
     }
 
     @Override
-    public void openCredit() {
+    public void addCredit() {
         logger.info("I do not need to open Credit");
     }
 
     @Override
-    public void openCard() {
+    public void addCard() {
         logger.info("I do not need to open Card");
+    }
+
+    @Override
+    public void addContribution() {
+        logger.info("I do not need to add Cotribution");
     }
 
     @Override

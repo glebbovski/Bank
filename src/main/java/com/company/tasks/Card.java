@@ -4,21 +4,27 @@ import com.company.interfaces.Chipped;
 import com.company.people.User;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Card implements Chipped {
     private static int uniqueNumber = 0;
     private final int currentNumber;
     private Date validity;
+    private String name;
+    private String surname;
 
-    public Card() {
+
+    {
         Card.uniqueNumber++;
         this.currentNumber = Card.uniqueNumber;
     }
 
+    public Card() {
+
+    }
+
     public Card(Date validity) {
-        Card.uniqueNumber++;
         this.validity = validity;
-        this.currentNumber = Card.uniqueNumber;
     }
 
 
@@ -35,6 +41,22 @@ public class Card implements Chipped {
         return currentNumber;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
     @Override
     public boolean hasMicrochip(Card card) {
         if (card.getCurrentNumber() >= 124) {
@@ -45,33 +67,25 @@ public class Card implements Chipped {
     }
 
     @Override
-    public int hashCode() {
-        int result = getCurrentNumber();
-        result = 31 * result + getValidity().hashCode();
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return Objects.equals(validity, card.validity) && Objects.equals(name, card.name) && Objects.equals(surname, card.surname);
     }
 
     @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) return true;
-
-        if (!(obj instanceof Card)) return false;
-
-        Card card = (Card) obj;
-
-        if ( getValidity() != null && getValidity().equals(card.getValidity())
-                && getCurrentNumber() == card.getCurrentNumber()) {
-            return true;
-        }
-
-        return false;
+    public int hashCode() {
+        return Objects.hash(validity, name, surname);
     }
 
     @Override
     public String toString() {
-        return "Card{validity=\'" + getValidity().toString() + "\', number=" +
-                getCurrentNumber() + '}';
+        return "Card{" +
+                "currentNumber=" + currentNumber +
+                ", validity=" + validity +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
-
 }

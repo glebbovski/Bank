@@ -10,7 +10,6 @@ public abstract class Car implements Driveable {
     private static int uniqueNumber;
     private final int currentNumber;
     private String color;
-    private String mark;
     private int year;
     private Driver driver;
     private final Logger logger = LogManager.getLogger(Car.class);
@@ -21,9 +20,8 @@ public abstract class Car implements Driveable {
         this.currentNumber = Car.uniqueNumber;
     }
 
-    public Car(String color, String mark, int year) {
+    public Car(String color, int year) {
         this.color = color;
-        this.mark = mark;
         this.year = year;
         Car.uniqueNumber++;
         this.currentNumber = Car.uniqueNumber;
@@ -35,14 +33,6 @@ public abstract class Car implements Driveable {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public String getMark() {
-        return mark;
-    }
-
-    public void setMark(String mark) {
-        this.mark = mark;
     }
 
     public int getYear() {
@@ -90,7 +80,7 @@ public abstract class Car implements Driveable {
     public int hashCode() {
         int result = getYear();
         result = 31 * result + getDriver().hashCode() + getCurrentNumber();
-        result = 31 * result + getColor().hashCode() + getMark().hashCode();
+        result = 31 * result + getColor().hashCode();
         return result;
     }
 
@@ -102,8 +92,7 @@ public abstract class Car implements Driveable {
 
         Car car = (Car) obj;
 
-        if (getDriver() != null && getDriver().equals(car.getDriver())
-                && getMark() != null && getMark().equals(car.getMark()) &&
+        if (getDriver() != null && getDriver().equals(car.getDriver()) &&
                 getYear() == car.getYear() && getColor() != null &&
                 getColor().equals(car.getColor()) && getCurrentNumber() == car.getCurrentNumber()) {
 
@@ -114,7 +103,7 @@ public abstract class Car implements Driveable {
 
     @Override
     public String toString() {
-        return "Car{number=" + getCurrentNumber() + ", color=\'" + getColor() + "\', mark=" + getMark() +
+        return "Car{number=" + getCurrentNumber() + ", color=\'" + getColor() +
                 ", driver=" + getDriver() + ", year=" + getYear() + '}';
     }
 }

@@ -40,6 +40,10 @@ public class Credit {
         this.lastPaymentDate = lastPaymentDate;
     }
 
+    private boolean exceedingLimit(int currentCredit) {
+        return currentCredit > 500_000;
+    }
+
     @Override
     public int hashCode() {
         int result = getCurrentCredit();
@@ -69,7 +73,4 @@ public class Credit {
         return "Credit{current=" + getCurrentCredit() + ", lastPayment=\'" + getLastPaymentDate().toString() + "\'}";
     }
 
-    private boolean exceedingLimit(int currentCredit) {
-        return currentCredit > 100_000;
-    }
 }

@@ -8,8 +8,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import  com.company.tasks.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,14 +23,17 @@ public class User extends Human implements Openable {
     private String phoneNumber;
     private BankAccount bankAccount;
     private Credit credit;
-    private Card card;
+    private ArrayList<Card> cards = new ArrayList<>();
     private Contribution contribution;
     private Deposit deposit;
     private final Logger logger = LogManager.getLogger(User.class);
 
-    public User() {
+    {
         User.id++;
         this.currentId = User.id;
+    }
+
+    public User() {
     }
 
     public User(String name, String surname, String phoneNumber, BankAccount bankAccount, Credit credit,
@@ -39,11 +46,11 @@ public class User extends Human implements Openable {
         this.phoneNumber = phoneNumber;
         this.bankAccount = bankAccount;
         this.credit = credit;
-        this.card = card;
+        if (card != null) {
+            this.cards.add(card);
+        }
         this.contribution = contribution;
         this.deposit = deposit;
-        User.id++;
-        this.currentId = User.id;
     }
 
     public String getPhoneNumber() {
@@ -73,12 +80,12 @@ public class User extends Human implements Openable {
         this.credit = credit;
     }
 
-    public Card getCard() {
-        return card;
+    public ArrayList<Card> getCards() {
+        return cards;
     }
 
-    public void setCard(Card card) {
-        this.card = card;
+    public void setCards(ArrayList<Card> cards) {
+        this.cards = cards;
     }
 
     public Contribution getContribution() {
@@ -107,38 +114,83 @@ public class User extends Human implements Openable {
     }
 
     @Override
-    public void openAccount() {
-        logger.info("I can open account in Bank if I did not do this before! :)");
-        if (this.bankAccount == null) {
-            this.bankAccount = new BankAccount(Currency.EURO);
+    public void addBankAccount() {
+        if (this.bankAccount != null) {
+            logger.info("You have an account already!");
+            return;
         }
+        Scanner scanner = new Scanner(System.in);
+        boolean flag = true;
+        while (flag) {
+
+            logger.info("Which currency do you want to choose? 1 - EURO, 2 - USD, 3 - HRIVNYA, 4 - FRANCS");
+            int cur = Integer.parseInt(scanner.nextLine()); // ADD TRY -------
+
+            switch (cur) {
+                case 1:
+                    this.bankAccount.setCurrency(Currency.EURO);
+                    flag = false;
+                    break;
+                case 2:
+                    this.bankAccount.setCurrency(Currency.USD);
+                    flag = false;
+                    break;
+                case 3:
+                    this.bankAccount.setCurrency(Currency.HRIVNYA);
+                    flag = false;
+                    break;
+                case 4:
+                    this.bankAccount.setCurrency(Currency.FRANCS);
+                    flag = false;
+                    break;
+                default:
+                    logger.info("Please, change the number!");
+                    break;
+            }
+
+        }
+
     }
 
     @Override
-    public void openDeposit() {
-        logger.info("I can open deposit in Bank if I did not do this before! :)");
-        if (this.deposit == null) {
-            this.deposit = new Deposit(20_000);
-        }
+    public void addDeposit() {
+        logger.info("Please, enter a depositAmount: ");
+        Scanner scanner = new Scanner(System.in);
+        int count = Integer.parseInt(scanner.nextLine());
+        this.deposit.setDepositAmount(count);
     }
 
     @Override
-    public void openCredit() {
-        logger.info("I can open credit in Bank if I did not do this before and if i did not exceed the limit! :)");
-        if (this.credit == null) {
-            this.credit = new Credit(90_000, new Date());
+    public void addCredit() {
+        logger.info("You can open credit in Bank if you did not do this before and if you did not exceed the limit! :)");
+        if (this.credit != null) {
+            logger.info("You have a credit in our bank already!");
         }
+        Scanner scanner = new Scanner(System.in);
+        logger.info("Please, enter a needed sum for your credit: ");
+        int sum = Integer.parseInt(scanner.nextLine());
+        this.credit.setCurrentCredit(sum);
+
     }
 
     @Override
-    public void openCard() {
-        logger.info("I can open card in Bank if I did not do this before! :)");
-        if (this.card == null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.YEAR, 3); // card for 3 years
-            this.card = new Card(calendar.getTime());
-        }
+    public void addCard() throws ParseException {
+        Card card = new Card();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.YEAR, 3); // card for 3 years
+        card.setValidity(calendar.getTime());
+        card.setName(this.getName());
+        card.setSurname(this.getSurname());
+        this.cards.add(card);
+    }
+
+    @Override
+    public void addContribution() {
+        logger.info("Please, enter a contributionAmount: ");
+        Scanner scanner = new Scanner(System.in);
+        int count = Integer.parseInt(scanner.nextLine());
+        this.contribution.setContributionAmount(count);
     }
 
     public boolean checkPhoneNumber(String phoneNumber) {
@@ -152,7 +204,7 @@ public class User extends Human implements Openable {
     public int hashCode() {
         int result = super.getName().hashCode() + super.getSurname().hashCode();
         result = result * 31 + getPhoneNumber().hashCode() + getBankAccount().hashCode();
-        result = 31 * result + getCard().hashCode() + getCredit().hashCode();
+        result = 31 * result + getCards().hashCode() + getCredit().hashCode();
         result = 31 * result + getContribution().hashCode() + getDeposit().hashCode() + getCurrentId();
         return result;
     }
@@ -169,7 +221,7 @@ public class User extends Human implements Openable {
         if (super.getName().equals(user.getName()) && super.getSurname().equals(user.getSurname()) &&
                 getPhoneNumber().equals(user.getPhoneNumber()) &&
                 getBankAccount() != null && getBankAccount().equals(user.getBankAccount()) &&
-                getCard() != null && getCard().equals(user.getCard()) &&
+                getCards() != null && getCards().equals(user.getCards()) &&
                 getCredit() != null && getCredit().equals(user.getCredit()) &&
                 getContribution() != null && getContribution().equals(user.getContribution()) &&
                 getDeposit() != null && getDeposit().equals(user.getDeposit()) &&
@@ -183,7 +235,7 @@ public class User extends Human implements Openable {
     @Override
     public String toString() {
         return "User{name=\'" + super.getName() + "\', surname=\'" + super.getSurname() +
-                "\', number=" + getPhoneNumber() + ", bankAccount=" + getBankAccount() + ", card=" + getCard() +
+                "\', number=" + getPhoneNumber() + ", bankAccount=" + getBankAccount() + ", cards=" + getCards() +
                 ", credit=" + getCredit() + ", contribution=" + getContribution() + ", deposit=" +
                 getDeposit() + ", id=" + getCurrentId() + '}';
     }
