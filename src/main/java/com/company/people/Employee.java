@@ -12,17 +12,20 @@ public abstract class Employee extends Human implements Openable {
     private final int currentId;
     private final Logger logger = LogManager.getLogger(Employee.class);
 
-    public Employee() {
+    {
         Employee.id++;
         this.currentId = Employee.id;
+    }
+
+    public Employee() {
+
     }
 
     public Employee(String name, String surname, String position, int salary) throws WrongNameOrSurnameException {
         super(name, surname);
         this.position = position;
         this.salary = salary;
-        Employee.id++;
-        this.currentId = Employee.id;
+
     }
 
     public String getPosition() {

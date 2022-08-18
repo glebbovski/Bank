@@ -14,17 +14,19 @@ public abstract class Car implements Driveable {
     private Driver driver;
     private final Logger logger = LogManager.getLogger(Car.class);
 
-
-    public Car() {
+    {
         Car.uniqueNumber++;
         this.currentNumber = Car.uniqueNumber;
+    }
+
+
+    public Car() {
+
     }
 
     public Car(String color, int year) {
         this.color = color;
         this.year = year;
-        Car.uniqueNumber++;
-        this.currentNumber = Car.uniqueNumber;
     }
 
     public String getColor() {

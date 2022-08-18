@@ -5,15 +5,16 @@ public class BankAccount {
     private static int uniqueNumber = 0;
     private final int currentNumber;
 
-    public BankAccount() {
+    {
         BankAccount.uniqueNumber++;
         this.currentNumber = BankAccount.uniqueNumber;
     }
 
+    public BankAccount() {
+    }
+
     public BankAccount(Currency currency) {
         this.currency = currency;
-        BankAccount.uniqueNumber++;
-        this.currentNumber = BankAccount.uniqueNumber;
     }
 
     public Currency getCurrency() {

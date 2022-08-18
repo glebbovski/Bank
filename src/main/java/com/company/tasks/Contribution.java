@@ -7,15 +7,16 @@ public class Contribution {
     private static int uniqueNumber;
     private final int currentNumber;
 
-    public Contribution() {
+    {
         Contribution.uniqueNumber++;
         this.currentNumber = Contribution.uniqueNumber;
     }
 
+    public Contribution() {
+    }
+
     public Contribution(int contributionAmount) {
         this.contributionAmount = contributionAmount;
-        Contribution.uniqueNumber++;
-        this.currentNumber = Contribution.uniqueNumber;
     }
 
     public int getContributionAmount() {
