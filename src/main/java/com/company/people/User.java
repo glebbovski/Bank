@@ -119,6 +119,7 @@ public class User extends Human implements Openable {
             logger.info("You have an account already!");
             return;
         }
+        this.bankAccount = new BankAccount();
         Scanner scanner = new Scanner(System.in);
         boolean flag = true;
         while (flag) {
@@ -154,6 +155,11 @@ public class User extends Human implements Openable {
 
     @Override
     public void addDeposit() {
+        if (this.deposit != null) {
+            logger.info("You have a deposit already!");
+            return;
+        }
+        this.deposit = new Deposit();
         logger.info("Please, enter a depositAmount: ");
         Scanner scanner = new Scanner(System.in);
         int count = Integer.parseInt(scanner.nextLine());
@@ -166,10 +172,12 @@ public class User extends Human implements Openable {
         if (this.credit != null) {
             logger.info("You have a credit in our bank already!");
         }
+        this.credit = new Credit();
         Scanner scanner = new Scanner(System.in);
         logger.info("Please, enter a needed sum for your credit: ");
         int sum = Integer.parseInt(scanner.nextLine());
         this.credit.setCurrentCredit(sum);
+        this.credit.setLastPaymentDate(new Date());
 
     }
 
@@ -187,6 +195,11 @@ public class User extends Human implements Openable {
 
     @Override
     public void addContribution() {
+        if (this.contribution != null) {
+            logger.info("You have a contribution already!");
+            return;
+        }
+        this.contribution = new Contribution();
         logger.info("Please, enter a contributionAmount: ");
         Scanner scanner = new Scanner(System.in);
         int count = Integer.parseInt(scanner.nextLine());

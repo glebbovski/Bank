@@ -12,7 +12,5 @@ public class Main {
         Program program = new Program();
         program.bankInfo(new File("README_BANK.txt"));
         program.run();
-
-
     }
 }

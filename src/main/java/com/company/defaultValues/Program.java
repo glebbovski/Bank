@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +39,7 @@ public class Program {
     }
 
     public static void dashForAnswer(String... answers) {
-        String strMinus = "---";
+        String strMinus = "";
         String topBotStr = "|";
         String centralStr = "|";
         for (int i = 0; i < answers.length; i++) {
@@ -52,8 +54,10 @@ public class Program {
                     centralStr += " |";
                     topBotStr += " |";
                 }
-                strMinus += "-";
             }
+        }
+        for (int i = 0; i < topBotStr.length(); i++) {
+            strMinus += "-";
         }
         logger.info(strMinus);
         logger.info(topBotStr);
@@ -65,6 +69,8 @@ public class Program {
 
     private LinkedList<User> addUsersToBank() throws WrongNameOrSurnameException, ParseException {
         // 3 users by default
+        boolean flag = false;
+        File file = new File("src/main/java/com/company/files/Users.txt");
         LinkedList<User> users = new LinkedList<>();
 
         Calendar calendar = Calendar.getInstance();
@@ -76,8 +82,10 @@ public class Program {
         user.setContribution(new Contribution(35));
         user.setDeposit(new Deposit(0));
         users.add(user);
-        insertUserToFile(user);
-
+        if (!file.exists() || file.length() == 0) {
+            flag = true;
+            insertUserToFile(user, file);
+        }
         calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 7);
@@ -87,7 +95,9 @@ public class Program {
         user.setContribution(new Contribution(19));
         user.setDeposit(new Deposit(99_000));
         users.add(user);
-        insertUserToFile(user);
+        if (flag) {
+            insertUserToFile(user, file);
+        }
 
         calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -97,7 +107,9 @@ public class Program {
         user.addCard();
         user.setContribution(new Contribution(19));
         users.add(user);
-        insertUserToFile(user);
+        if (flag) {
+            insertUserToFile(user, file);
+        }
 
         return users;
     }
@@ -105,20 +117,30 @@ public class Program {
     private ArrayList<Employee> addEmployeesToBank() throws WrongNameOrSurnameException {
         ArrayList<Employee> employees = new ArrayList<>();
 
+        boolean flag = false;
+        File file = new File("src/main/java/com/company/files/Employees.txt");
+
         Driver driver = new Driver("Abobus", "Abobusov", 20_000, true);
         employees.add(driver);
-        insertEmployeeToFile(driver);
+        if (!file.exists() || file.length() == 0) {
+            flag = true;
+            insertEmployeeToFile(driver, file);
+        }
 
         Director director = new Director("Evgeniy", "Alexandrov", 60_000, 20);
         employees.add(director);
-        insertEmployeeToFile(director);
+        if (flag) {
+            insertEmployeeToFile(director, file);
+        }
 
         Cashier cashier1 = new Cashier("Briona", "Fagetova", 15_000, 3);
         Cashier cashier2 = new Cashier("Fiona", "Bergeret", 15_000, 2);
         employees.add(cashier1);
         employees.add(cashier2);
-        insertEmployeeToFile(cashier1);
-        insertEmployeeToFile(cashier2);
+        if (flag) {
+            insertEmployeeToFile(cashier1, file);
+            insertEmployeeToFile(cashier2, file);
+        }
 
         return employees;
     }
@@ -176,8 +198,155 @@ public class Program {
         }
     }
 
-    private void insertUserToFile(User user) {
-        File file = new File("src/main/java/com/company/files/Users.txt");
+    private User creatingAnUser() throws WrongNameOrSurnameException, ParseException {
+        User user = new User();
+        boolean switchChoiceDoneCorrectly = false;
+        String tmp = null;
+        Scanner scanner = new Scanner(System.in);
+        logger.info("Please, enter your name: ");
+        tmp = scanner.nextLine().replaceAll("\\s+", "");
+        user.setName(tmp);
+        logger.info("Please, enter your surname: ");
+        tmp = scanner.nextLine().replaceAll("\\s+", "");
+        user.setSurname(tmp);
+        logger.info("Please, enter your phone number: ");
+        tmp = scanner.nextLine().replaceAll("\\s+", "");
+        user.setPhoneNumber(tmp);
+
+        boolean flagYesChoice = false;
+        boolean flagNoChoice = false;
+
+        while (!switchChoiceDoneCorrectly) {
+            logger.info("Do you want to open an bankAccount?");
+            dashForAnswer("yes", "no");
+            tmp = scanner.nextLine().replaceAll("\\s+", "");
+            switch (tmp) {
+                case "yes":
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                default:
+                    dash("Something went wrong, try again");
+                    break;
+            }
+        }
+
+        if (flagYesChoice) {
+            user.addBankAccount();
+        }
+
+        switchChoiceDoneCorrectly = false;
+        flagYesChoice = false;
+
+        while (!switchChoiceDoneCorrectly) {
+            logger.info("Do you want to open a credit?");
+            dashForAnswer("yes", "no");
+            tmp = scanner.nextLine().replaceAll("\\s+", "");
+            switch (tmp) {
+                case "yes":
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                default:
+                    dash("Something went wrong, try again");
+                    break;
+            }
+        }
+
+        if (flagYesChoice) {
+            user.addCredit();
+        }
+
+        switchChoiceDoneCorrectly = false;
+        flagYesChoice = false;
+
+        while (!switchChoiceDoneCorrectly) {
+            logger.info("Do you want to add a card?");
+            dashForAnswer("yes", "no");
+            tmp = scanner.nextLine().replaceAll("\\s+", "");
+            switch (tmp) {
+                case "yes":
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                default:
+                    dash("Something went wrong, try again");
+                    break;
+            }
+        }
+
+        if (flagYesChoice) {
+            user.addCard();
+        }
+
+        switchChoiceDoneCorrectly = false;
+        flagYesChoice = false;
+
+        while (!switchChoiceDoneCorrectly) {
+            logger.info("Do you want to add a contribution?");
+            dashForAnswer("yes", "no");
+            tmp = scanner.nextLine().replaceAll("\\s+", "");
+            switch (tmp) {
+                case "yes":
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                default:
+                    dash("Something went wrong, try again");
+                    break;
+            }
+        }
+
+        if (flagYesChoice) {
+            user.addContribution();
+        }
+
+        switchChoiceDoneCorrectly = false;
+        flagYesChoice = false;
+
+        while (!switchChoiceDoneCorrectly) {
+            logger.info("Do you want to add a deposit?");
+            dashForAnswer("yes", "no");
+            tmp = scanner.nextLine().replaceAll("\\s+", "");
+            switch (tmp) {
+                case "yes":
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                default:
+                    dash("Something went wrong, try again");
+                    break;
+            }
+        }
+
+        if (flagYesChoice) {
+            user.addDeposit();
+        }
+
+        return user;
+    }
+
+    private void insertUserToFile(User user, File file) {
         try (FileWriter writer = new FileWriter(file, true)) {
             writer.write(user.toString() + '\n');
         } catch (IOException e) {
@@ -187,8 +356,7 @@ public class Program {
 
     }
 
-    private void insertEmployeeToFile(Employee employee) {
-        File file = new File("src/main/java/com/company/files/Employees.txt");
+    private void insertEmployeeToFile(Employee employee, File file) {
         try (FileWriter writer = new FileWriter(file, true)) {
             writer.write(employee.toString() + '\n');
         } catch (IOException e) {
@@ -196,8 +364,7 @@ public class Program {
         }
     }
 
-    private void insertOwnerToFile(BankOwner owner) {
-        File file = new File("src/main/java/com/company/files/Owners.txt");
+    private void insertOwnerToFile(BankOwner owner, File file) {
         try (FileWriter writer = new FileWriter(file, true)) {
             writer.write(owner.toString() + '\n');
         } catch (IOException e) {
@@ -208,10 +375,11 @@ public class Program {
     private Bank bankInitialization() throws WrongNameOrSurnameException, ParseException {
         Bank bank = new Bank();
         bank.setBankName("YOLO Bank");
-
+        File file = new File("src/main/java/com/company/files/Owners.txt");
         BankOwner bankOwner = new BankOwner("Gleb", "Chekmezov", true);
-        insertOwnerToFile(bankOwner);
-
+        if (!file.exists() || file.length() == 0) {
+            insertOwnerToFile(bankOwner, file);
+        }
         bank.setBankOwner(bankOwner);
         bank.setUsers(addUsersToBank());
         bank.setEmployees(addEmployeesToBank());
@@ -234,161 +402,310 @@ public class Program {
         return bank;
     }
 
+    private boolean findHuman(String tmp, String name, String surname) {
+        int idxName = tmp.indexOf("name");
+        int idxSurname = tmp.indexOf("surname");
+        int idxGalo4kaOne = tmp.indexOf('\'', idxName);
+        int idxGalo4kaTwo = tmp.indexOf('\'', idxGalo4kaOne + 1);
+        String tmpName = tmp.substring(idxGalo4kaOne + 1, idxGalo4kaTwo);
+        idxGalo4kaOne = tmp.indexOf('\'', idxSurname);
+        idxGalo4kaTwo = tmp.indexOf('\'', idxGalo4kaOne + 1);
+        String tmpSurname = tmp.substring(idxGalo4kaOne + 1, idxGalo4kaTwo);
+        if (tmpSurname.equals(surname) && tmpName.equals(name)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void run() throws WrongNameOrSurnameException, ParseException {
 
         Bank bank = bankInitialization();
         dash("Bank Program");
         dash(bank.getBankName());
-        dash("Information About our Bank");
-        logger.info(bank.toString());
-
         dash("Start working...");
-        dash("Hello! Have you already been with us? yes OR IF YOU ARE ALREADY OUR USER ENTER \"already\" (IF YOU WANT TO " +
-                "LEAVE JUST SKIP OR ENTER \"exit\")");
-        dashForAnswer("yes", "no");
+
+        boolean flagYesChoice = false;
+        boolean flagNoChoice = false;
+        boolean flagExitChoice = false;
+        boolean flagForSomethingWrong = false;
+        boolean switchChoiceDoneCorrectly = false;
 
         Scanner scanner = new Scanner(System.in);
-        String str = scanner.nextLine();
-        str = str.replaceAll("\\s+", "");
+        String str = null;
 
-        boolean flag = false;
-        boolean flagAlreadyUser = false;
-        boolean flagForSomethingWrong = false;
-
-        switch (str) {
-            case "exit":
-            case "":
-                dash("OK GOODBYE");
-                break;
-            case "already":
-                flagAlreadyUser = true;
-                break;
-            case "yes":
-                flag = true;
-                break;
-            default:
-                dash("SOMETHING WENT WRONG :/ GOODBYE");
-                flagForSomethingWrong = true;
-                break;
-        }
-
-        if (flag) {
-            User user = new User();
-            logger.info("Please, enter your name: ");
-            str = scanner.nextLine();
-            user.setName(str);
-            logger.info("Please, enter your surname: ");
-            str = scanner.nextLine();
-            user.setSurname(str);
-            logger.info("Please, enter your phone number: ");
-            str = scanner.nextLine();
-            user.setPhoneNumber(str);
-            logger.info("Do you want to open an bankAccount? yes or no");
-            flag = false;
-            str = scanner.nextLine();
+        while (!switchChoiceDoneCorrectly) {
+            dash("Hello! Have you already been in YOLO bank?");
+            dashForAnswer("yes", "no", "exit");
+            str = scanner.nextLine().replaceAll("\\s+", "");
             switch (str) {
-                case "no":
+                case "exit":
+                    flagExitChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
                 case "yes":
-                    flag = true;
+                    flagYesChoice = true;
+                    switchChoiceDoneCorrectly = true;
+                    break;
+                case "no":
+                    flagNoChoice = true;
+                    switchChoiceDoneCorrectly = true;
                     break;
                 default:
-                    dash("SOMETHING WENT WRONG :/ GOODBYE");
-                    flagForSomethingWrong = true;
+                    dash("Something went wrong, try again");
                     break;
             }
+        }
 
-            if (flag) {
-                if (str.equals("yes")) {
-                    user.addBankAccount();
+        if(flagYesChoice) {
+            logger.info("Please, enter your name: ");
+            String name = scanner.nextLine().replaceAll("\\s+", "");
+            logger.info("Please, enter your surname: ");
+            String surname = scanner.nextLine().replaceAll("\\s+", "");
+            logger.info("Please, enter your unique id: ");
+            int id = Integer.parseInt(scanner.nextLine().replaceAll("\\s+", ""));
+//            boolean present = bank.getUsers().stream().filter(o -> (o.getCurrentId() == id && o.getName().equals(name)
+//                    && o.getSurname().equals(surname))).findFirst().isPresent();
+//            boolean present = bank.getUsers().stream().anyMatch(o -> o.getCurrentId() == id && o.getName().equals(name)
+//                    && o.getSurname().equals(surname));
+
+            boolean presentUserID = true;
+            boolean presentEmployeeID = true;
+            boolean presentUser = true;
+            boolean presentEmployee = true;
+
+            List<String> lines = new ArrayList<>();
+
+            try (Stream<String> lineStream = Files.newBufferedReader(
+                    Paths.get("src/main/java/com/company/files/Users.txt"))
+                    .lines()) {
+                lines = lineStream.collect(Collectors.toList());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (lines.size() < id) {
+                presentUserID = false;
+                presentUser = false;
+            }
+
+            if (presentUserID) {
+                String tmp = lines.get(id - 1);
+                boolean found = findHuman(tmp, name, surname);
+                if (found) {
+                    presentUser = true;
+                    dash("We found you as our User!");
+                    logger.info(tmp);
+                } else {
+                    presentUser = false;
+                }
+            }
+
+            if (!presentUser) {
+                try (Stream<String> lineStream = Files.newBufferedReader(
+                                Paths.get("src/main/java/com/company/files/Employees.txt"))
+                        .lines()) {
+                    lines = lineStream.collect(Collectors.toList());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                logger.info("Do you want to add a card? yes or no");
-                flag = false;
-                str = scanner.nextLine();
-
-                switch (str) {
-                    case "no":
-                    case "yes":
-                        flag = true;
-                        break;
-                    default:
-                        dash("SOMETHING WENT WRONG :/ GOODBYE");
-                        flagForSomethingWrong = true;
-                        break;
+                if (lines.size() < id) {
+                    presentEmployeeID = false;
+                    presentEmployee = false;
                 }
 
-                if (flag) {
-                    if (str.equals("yes")) {
-                        user.addCard();
+                if (presentEmployeeID) {
+                    String tmp = lines.get(id - 1);
+                    boolean found = findHuman(tmp, name, surname);
+                    if (found) {
+                        presentEmployee = true;
+                        dash("We found you as our Employee!");
+                        logger.info(tmp);
+                    } else {
+                        presentEmployee = false;
                     }
+                }
+            }
 
-                    logger.info("Do you want to add contribution? yes or no");
-                    flag = false;
-                    str = scanner.nextLine();
-
+            if (!presentEmployee) {
+                switchChoiceDoneCorrectly = false;
+                flagExitChoice = false;
+                flagYesChoice = false;
+                while (!switchChoiceDoneCorrectly) {
+                    dash("We couldn't find you! Do you want to register as new User? " +
+                            "(Sorry, we do not need new Employees now)");
+                    dashForAnswer("yes", "no");
+                    str = scanner.nextLine().replaceAll("\\s+", "");
                     switch (str) {
-                        case "no":
                         case "yes":
-                            flag = true;
+                            flagYesChoice = true;
+                            switchChoiceDoneCorrectly = true;
+                            break;
+                        case "no":
+                            flagExitChoice = true;
+                            switchChoiceDoneCorrectly = true;
                             break;
                         default:
-                            dash("SOMETHING WENT WRONG :/ GOODBYE");
-                            flagForSomethingWrong = true;
+                            dash("Something went wrong, try again");
                             break;
                     }
+                }
 
-                    if (flag) {
-                        if (str.equals("yes")) {
-                            user.addContribution();
-                        }
-                        logger.info("Do you want to add deposit? yes or no");
-                        flag = false;
-                        str = scanner.nextLine();
-
-                        switch (str) {
-                            case "no":
-                            case "yes":
-                                flag = true;
-                                break;
-                            default:
-                                dash("SOMETHING WENT WRONG :/ GOODBYE");
-                                flagForSomethingWrong = true;
-                                break;
-                        }
-                        if (flag) {
-                            if (str.equals("yes")) {
-                                user.addDeposit();
-                            }
-
-
-                        }
-
-
-                    }
-
+                if (flagYesChoice) {
+                    User user = creatingAnUser();
+                    bank.addUser(user);
+                    flagExitChoice = true;
+                    insertUserToFile(user, new File("src/main/java/com/company/files/Users.txt"));
+                    dash("We added you to list of user");
+                    dash(user.toString());
                 }
 
             }
-            if(!flagForSomethingWrong) {
+
+        }
+
+        if (flagNoChoice) {
+            switchChoiceDoneCorrectly = false;
+            while (!switchChoiceDoneCorrectly) {
+                dash("Do you want to register as new User? " +
+                        "(Sorry, we do not need new Employees now)");
+                dashForAnswer("yes", "no");
+                str = scanner.nextLine().replaceAll("\\s+", "");
+                switch (str) {
+                    case "yes":
+                        flagYesChoice = true;
+                        switchChoiceDoneCorrectly = true;
+                        break;
+                    case "no":
+                        flagExitChoice = true;
+                        switchChoiceDoneCorrectly = true;
+                        break;
+                    default:
+                        dash("Something went wrong, try again");
+                        break;
+                }
+            }
+            if (flagYesChoice) {
+                User user = creatingAnUser();
                 bank.addUser(user);
-                logger.info(user.toString());
-            }
-        }
-
-        if(flagAlreadyUser) {
-            logger.info("Please, enter your ID: ");
-            int id = Integer.parseInt(scanner.nextLine());
-            boolean present = bank.getUsers().stream().filter(o -> o.getCurrentId() == id).findFirst().isPresent();
-            if (present) {
-                User user = bank.getUsers().get(id - 1);
-                logger.info(user.toString());
-            } else {
-                logger.info("You are a liar, the user with this ID has not yet been registered!");
+                flagExitChoice = true;
+                insertUserToFile(user, new File("src/main/java/com/company/files/Users.txt"));
+                dash("We added you to list of user");
+                dash(user.toString());
             }
 
-            dash("GOODBYE!");
-
         }
+
+        if (flagExitChoice) {
+            dash("Ok, goodbye!");
+        }
+
+
+
+//        if (flag) {
+//            User user = new User();
+//            logger.info("Please, enter your name: ");
+//            str = scanner.nextLine();
+//            user.setName(str);
+//            logger.info("Please, enter your surname: ");
+//            str = scanner.nextLine();
+//            user.setSurname(str);
+//            logger.info("Please, enter your phone number: ");
+//            str = scanner.nextLine();
+//            user.setPhoneNumber(str);
+//            logger.info("Do you want to open an bankAccount? yes or no");
+//            flag = false;
+//            str = scanner.nextLine();
+//            switch (str) {
+//                case "no":
+//                case "yes":
+//                    flag = true;
+//                    break;
+//                default:
+//                    dash("SOMETHING WENT WRONG :/ GOODBYE");
+//                    flagForSomethingWrong = true;
+//                    break;
+//            }
+//
+//            if (flag) {
+//                if (str.equals("yes")) {
+//                    user.addBankAccount();
+//                }
+//
+//                logger.info("Do you want to add a card? yes or no");
+//                flag = false;
+//                str = scanner.nextLine();
+//
+//                switch (str) {
+//                    case "no":
+//                    case "yes":
+//                        flag = true;
+//                        break;
+//                    default:
+//                        dash("SOMETHING WENT WRONG :/ GOODBYE");
+//                        flagForSomethingWrong = true;
+//                        break;
+//                }
+//
+//                if (flag) {
+//                    if (str.equals("yes")) {
+//                        user.addCard();
+//                    }
+//
+//                    logger.info("Do you want to add contribution? yes or no");
+//                    flag = false;
+//                    str = scanner.nextLine();
+//
+//                    switch (str) {
+//                        case "no":
+//                        case "yes":
+//                            flag = true;
+//                            break;
+//                        default:
+//                            dash("SOMETHING WENT WRONG :/ GOODBYE");
+//                            flagForSomethingWrong = true;
+//                            break;
+//                    }
+//
+//                    if (flag) {
+//                        if (str.equals("yes")) {
+//                            user.addContribution();
+//                        }
+//                        logger.info("Do you want to add deposit? yes or no");
+//                        flag = false;
+//                        str = scanner.nextLine();
+//
+//                        switch (str) {
+//                            case "no":
+//                            case "yes":
+//                                flag = true;
+//                                break;
+//                            default:
+//                                dash("SOMETHING WENT WRONG :/ GOODBYE");
+//                                flagForSomethingWrong = true;
+//                                break;
+//                        }
+//                        if (flag) {
+//                            if (str.equals("yes")) {
+//                                user.addDeposit();
+//                            }
+//
+//
+//                        }
+//
+//
+//                    }
+//
+//                }
+//
+//            }
+//            if(!flagForSomethingWrong) {
+//                bank.addUser(user);
+//                logger.info(user.toString());
+//            }
+//        }
+
 
     }
 }

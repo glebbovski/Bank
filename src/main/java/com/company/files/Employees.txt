@@ -2,7 +2,3 @@ Empoloyee{position=Driver, name='Abobus', surname='Abobusov', salary=20000, id=1
 Empoloyee{position=Director, name='Evgeniy', surname='Alexandrov', salary=60000, id=2}, yearsOfWorkExperience=20}
 Empoloyee{position=Cashier, name='Briona', surname='Fagetova', salary=15000, id=3}, cashDeskNumber=3}
 Empoloyee{position=Cashier, name='Fiona', surname='Bergeret', salary=15000, id=4}, cashDeskNumber=2}
-Empoloyee{position=Driver, name='Abobus', surname='Abobusov', salary=20000, id=1}, hasDriverLicense=true}
-Empoloyee{position=Director, name='Evgeniy', surname='Alexandrov', salary=60000, id=2}, yearsOfWorkExperience=20}
-Empoloyee{position=Cashier, name='Briona', surname='Fagetova', salary=15000, id=3}, cashDeskNumber=3}
-Empoloyee{position=Cashier, name='Fiona', surname='Bergeret', salary=15000, id=4}, cashDeskNumber=2}
