@@ -1,0 +1,2 @@
+BankOwner{name='Gleb', surname='Chekmezov', ukrainian=true}
+BankOwner{name='Gleb', surname='Chekmezov', ukrainian=true}
