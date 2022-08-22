@@ -2,6 +2,7 @@ package com.company.people;
 
 import com.company.exceptions.PhoneNumberException;
 import com.company.exceptions.WrongNameOrSurnameException;
+import com.company.interfaces.Functional;
 import com.company.interfaces.Openable;
 import com.company.tasks.*;
 import org.apache.logging.log4j.LogManager;
@@ -205,6 +206,8 @@ public class User extends Human implements Openable {
         int count = Integer.parseInt(scanner.nextLine());
         this.contribution.setContributionAmount(count);
     }
+
+    public static Functional<User, BankOwner> converter = x -> new BankOwner(x.getName(), x.getSurname(), true);
 
     public boolean checkPhoneNumber(String phoneNumber) {
         String regx = "(?=.*\\+[0-9]{3}\\s?[0-9]{2}\\s?[0-9]{3}\\s?[0-9]{4,5}$)";
