@@ -5,23 +5,25 @@ import com.company.exceptions.WrongNameOrSurnameException;
 import com.company.interfaces.Functional;
 import com.company.interfaces.Openable;
 import com.company.tasks.*;
+import com.company.tasks.Currency;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import  com.company.tasks.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class User extends Human implements Openable {
-    private static int id = 0;
+    public static int id = 0;
     private final int currentId;
-    private String phoneNumber;
     private BankAccount bankAccount;
     private Credit credit;
     private ArrayList<Card> cards = new ArrayList<>();
@@ -30,7 +32,15 @@ public class User extends Human implements Openable {
     private final Logger logger = LogManager.getLogger(User.class);
 
     {
-        User.id++;
+        List<String> lines = new ArrayList<>();
+        try (Stream<String> lineStream = Files.newBufferedReader(
+                        Paths.get("src/main/java/com/company/files/Users.txt"))
+                .lines()) {
+            lines = lineStream.collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        User.id = lines.size() + 1;
         this.currentId = User.id;
     }
 
@@ -39,12 +49,7 @@ public class User extends Human implements Openable {
 
     public User(String name, String surname, String phoneNumber, BankAccount bankAccount, Credit credit,
                 Card card, Contribution contribution, Deposit deposit) throws WrongNameOrSurnameException {
-        super(name, surname);
-
-        if (!checkPhoneNumber(phoneNumber)) {
-            throw new PhoneNumberException("Wrong Phone Number");
-        }
-        this.phoneNumber = phoneNumber;
+        super(name, surname, phoneNumber);
         this.bankAccount = bankAccount;
         this.credit = credit;
         if (card != null) {
@@ -52,17 +57,6 @@ public class User extends Human implements Openable {
         }
         this.contribution = contribution;
         this.deposit = deposit;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        if (!checkPhoneNumber(phoneNumber)) {
-            throw new PhoneNumberException("Wrong Phone Number");
-        }
-        this.phoneNumber = phoneNumber;
     }
 
     public BankAccount getBankAccount() {
@@ -207,53 +201,32 @@ public class User extends Human implements Openable {
         this.contribution.setContributionAmount(count);
     }
 
-    public static Functional<User, BankOwner> converter = x -> new BankOwner(x.getName(), x.getSurname(), true);
+    public static Functional<User, BankOwner> converter = x -> new BankOwner(x.getName(), x.getSurname(), x.getPhoneNumber(), true);
 
-    public boolean checkPhoneNumber(String phoneNumber) {
-        String regx = "(?=.*\\+[0-9]{3}\\s?[0-9]{2}\\s?[0-9]{3}\\s?[0-9]{4,5}$)";
-        Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(phoneNumber);
-        return matcher.find();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return currentId == user.currentId && Objects.equals(bankAccount, user.bankAccount) && Objects.equals(credit, user.credit) && Objects.equals(cards, user.cards) && Objects.equals(contribution, user.contribution) && Objects.equals(deposit, user.deposit);
     }
 
     @Override
     public int hashCode() {
-        int result = super.getName().hashCode() + super.getSurname().hashCode();
-        result = result * 31 + getPhoneNumber().hashCode() + getBankAccount().hashCode();
-        result = 31 * result + getCards().hashCode() + getCredit().hashCode();
-        result = 31 * result + getContribution().hashCode() + getDeposit().hashCode() + getCurrentId();
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) return true;
-
-        if (!(obj instanceof User)) return false;
-
-        User user = (User) obj;
-
-        if (super.getName().equals(user.getName()) && super.getSurname().equals(user.getSurname()) &&
-                getPhoneNumber().equals(user.getPhoneNumber()) &&
-                getBankAccount() != null && getBankAccount().equals(user.getBankAccount()) &&
-                getCards() != null && getCards().equals(user.getCards()) &&
-                getCredit() != null && getCredit().equals(user.getCredit()) &&
-                getContribution() != null && getContribution().equals(user.getContribution()) &&
-                getDeposit() != null && getDeposit().equals(user.getDeposit()) &&
-                getCurrentId() == user.getCurrentId()) {
-            return true;
-        }
-
-        return false;
+        return Objects.hash(super.hashCode(), currentId, bankAccount, credit, cards, contribution, deposit);
     }
 
     @Override
     public String toString() {
-        return "User{name=\'" + super.getName() + "\', surname=\'" + super.getSurname() +
-                "\', number=" + getPhoneNumber() + ", bankAccount=" + getBankAccount() + ", cards=" + getCards() +
-                ", credit=" + getCredit() + ", contribution=" + getContribution() + ", deposit=" +
-                getDeposit() + ", id=" + getCurrentId() + '}';
+        return "User{" + "name='" + getName() + "', surname='" + getSurname() + "', phoneNumber='"
+                + getPhoneNumber() + "'" +
+                ", currentId=" + currentId +
+                ", bankAccount=" + bankAccount +
+                ", credit=" + credit +
+                ", cards=" + cards +
+                ", contribution=" + contribution +
+                ", deposit=" + deposit +
+                '}';
     }
-
 }

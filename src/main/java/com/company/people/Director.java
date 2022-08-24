@@ -2,6 +2,8 @@ package com.company.people;
 
 import com.company.exceptions.WrongNameOrSurnameException;
 
+import java.util.Objects;
+
 public class Director extends Employee {
     private int yearsWorkExperience;
 
@@ -9,8 +11,8 @@ public class Director extends Employee {
         this.setPosition("Director");
     }
 
-    public Director(String name, String surname, int salary, int yearsWorkExperience) throws WrongNameOrSurnameException {
-        super(name, surname, "Director", salary);
+    public Director(String name, String surname, String phoneNumber, int salary, int yearsWorkExperience) throws WrongNameOrSurnameException {
+        super(name, surname, phoneNumber,  "Director", salary);
         this.yearsWorkExperience = yearsWorkExperience;
     }
 
@@ -23,26 +25,17 @@ public class Director extends Employee {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.hashCode() * 31 + 1;
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Director director = (Director) o;
+        return yearsWorkExperience == director.yearsWorkExperience;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof Director)) return false;
-
-        Director director = (Director) obj;
-
-        if (getName() != null && getName().equals(director.getName()) &&
-                getSurname() != null && getSurname().equals(director.getSurname()) &&
-                getYearsWorkExperience() == director.getYearsWorkExperience()) {
-            return true;
-        }
-
-        return false;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), yearsWorkExperience);
     }
 
     @Override

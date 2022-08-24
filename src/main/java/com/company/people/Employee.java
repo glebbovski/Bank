@@ -5,6 +5,8 @@ import com.company.interfaces.Openable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 public abstract class Employee extends Human implements Openable {
     private String position;
     private int salary;
@@ -21,8 +23,8 @@ public abstract class Employee extends Human implements Openable {
 
     }
 
-    public Employee(String name, String surname, String position, int salary) throws WrongNameOrSurnameException {
-        super(name, surname);
+    public Employee(String name, String surname, String phoneNumber, String position, int salary) throws WrongNameOrSurnameException {
+        super(name, surname, phoneNumber);
         this.position = position;
         this.salary = salary;
 
@@ -79,35 +81,26 @@ public abstract class Employee extends Human implements Openable {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.getName().hashCode() + super.getSurname().hashCode();
-        result = 31 * result + getPosition().hashCode() + getSalary();
-        result = 31 * result + getCurrentId();
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Employee employee = (Employee) o;
+        return salary == employee.salary && currentId == employee.currentId && Objects.equals(position, employee.position);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof Employee)) return false;
-
-        Employee employee = (Employee) obj;
-
-        if (getPosition() != null && employee.getPosition().equals(getPosition()) &&
-                getName() != null && getName().equals(employee.getName()) &&
-                getSurname() != null && getSurname().equals(employee.getSurname()) &&
-                getSalary() == employee.getSalary() && getCurrentId() == employee.getCurrentId()) {
-            return true;
-        }
-
-        return false;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), position, salary, currentId);
     }
 
     @Override
     public String toString() {
-        return "Empoloyee{position=" + getPosition() + ", name=\'" + super.getName() + "\', surname=\'" +
-                super.getSurname() + "\', salary=" + getSalary() + ", id=" + getCurrentId() + '}';
-
+        return "Employee{" + "name='" + getName() + "', surname='" + getSurname() + "', phoneNumber='"
+                + getPhoneNumber() + "', " +
+                "position='" + position + '\'' +
+                ", salary=" + salary +
+                ", currentId=" + currentId +
+                '}';
     }
 }

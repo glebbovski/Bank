@@ -6,6 +6,8 @@ import com.company.mainBank.MainSafe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 public class BankOwner extends Human implements Openable {
 
     private boolean isUkrainian;
@@ -14,8 +16,8 @@ public class BankOwner extends Human implements Openable {
     public BankOwner() {
     }
 
-    public BankOwner(String name, String surname, boolean isUkrainian) throws WrongNameOrSurnameException {
-        super(name, surname);
+    public BankOwner(String name, String surname, String phoneNumber, boolean isUkrainian) throws WrongNameOrSurnameException {
+        super(name, surname, phoneNumber);
         this.isUkrainian = isUkrainian;
     }
 
@@ -59,33 +61,23 @@ public class BankOwner extends Human implements Openable {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.getName().hashCode();
-        result = 31 * result + super.getSurname().hashCode();
-        result = 31 * result + 31 * 29;
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BankOwner bankOwner = (BankOwner) o;
+        return isUkrainian == bankOwner.isUkrainian;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof BankOwner)) return false;
-
-        BankOwner owner = (BankOwner) obj;
-
-        if (getName() != null && getName().equals(owner.getName()) &&
-                getSurname() != null && getSurname().equals(owner.getSurname()) &&
-                isUkrainian() == owner.isUkrainian()) {
-            return true;
-        }
-
-        return false;
-
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isUkrainian);
     }
 
     @Override
     public String toString() {
-        return "BankOwner{name=\'" + getName() + "\', surname=\'" + getSurname() + "\', ukrainian=" + isUkrainian() + '}';
+        return super.toString() + ", " +
+                "isUkrainian=" + isUkrainian +
+                '}';
     }
 }

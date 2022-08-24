@@ -4,6 +4,8 @@ import com.company.exceptions.WrongNameOrSurnameException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 
 public class Driver extends Employee {
     private boolean hasDriverLicense;
@@ -13,8 +15,8 @@ public class Driver extends Employee {
         this.setPosition("Driver");
     }
 
-    public Driver(String name, String surname, int salary, boolean hasDriverLicense) throws WrongNameOrSurnameException {
-        super(name, surname, "Driver", salary);
+    public Driver(String name, String surname, String phoneNumber, int salary, boolean hasDriverLicense) throws WrongNameOrSurnameException {
+        super(name, surname, phoneNumber, "Driver", salary);
         this.hasDriverLicense = hasDriverLicense;
     }
 
@@ -27,28 +29,18 @@ public class Driver extends Employee {
     }
 
 
-
     @Override
-    public int hashCode() {
-        int result = super.hashCode() * 31 + 29;
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Driver driver = (Driver) o;
+        return hasDriverLicense == driver.hasDriverLicense;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof Driver)) return false;
-
-        Driver driver = (Driver) obj;
-
-        if (getName() != null && getName().equals(driver.getName()) &&
-                getSurname() != null && getSurname().equals(driver.getSurname()) &&
-                isHasDriverLicense() == driver.isHasDriverLicense()) {
-            return true;
-        }
-
-        return false;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), hasDriverLicense);
     }
 
     @Override

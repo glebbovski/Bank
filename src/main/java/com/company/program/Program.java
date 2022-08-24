@@ -77,7 +77,7 @@ public class Program {
     private LinkedList<User> addUsersToBank() throws WrongNameOrSurnameException, ParseException {
         // 3 users by default
         boolean flag = false;
-        File file = new File("src/main/java/com/company/files/Users.txt");
+        File file = new File("src/main/resources/files/Users.txt");
         LinkedList<User> users = new LinkedList<>();
 
         Calendar calendar = Calendar.getInstance();
@@ -96,7 +96,7 @@ public class Program {
         calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 7);
-        user = new User("Denys", "Avilov", "+380 44 537 1428", new BankAccount(Currency.HRIVNYA),
+        user = new User("Denys", "Avilov", "+380445371428", new BankAccount(Currency.HRIVNYA),
                 new Credit(90_000, new Date()), null, null, null);
         user.addCard();
         user.setContribution(new Contribution(19));
@@ -125,23 +125,23 @@ public class Program {
         ArrayList<Employee> employees = new ArrayList<>();
 
         boolean flag = false;
-        File file = new File("src/main/java/com/company/files/Employees.txt");
+        File file = new File("src/main/resources/files/Employees.txt");
 
-        Driver driver = new Driver("Abobus", "Abobusov", 20_000, true);
+        Driver driver = new Driver("Abobus", "Abobusov", "+380914228925", 20_000, true);
         employees.add(driver);
         if (!file.exists() || file.length() == 0) {
             flag = true;
             insertEmployeeToFile(driver, file);
         }
 
-        Director director = new Director("Evgeniy", "Alexandrov", 60_000, 20);
+        Director director = new Director("Evgeniy", "Alexandrov","+380925926726" , 60_000, 20);
         employees.add(director);
         if (flag) {
             insertEmployeeToFile(director, file);
         }
 
-        Cashier cashier1 = new Cashier("Briona", "Fagetova", 15_000, 3);
-        Cashier cashier2 = new Cashier("Fiona", "Bergeret", 15_000, 2);
+        Cashier cashier1 = new Cashier("Briona", "Fagetova", "+380927113254", 15_000, 3);
+        Cashier cashier2 = new Cashier("Fiona", "Bergeret", "+380673717845", 15_000, 2);
         employees.add(cashier1);
         employees.add(cashier2);
         if (flag) {
@@ -219,6 +219,10 @@ public class Program {
         logger.info("Please, enter your phone number: ");
         tmp = scanner.nextLine().replaceAll("\\s+", "");
         user.setPhoneNumber(tmp);
+
+        if (isAlredyAdded(user.getName(), user.getSurname(), user.getPhoneNumber())) {
+            return null;
+        }
 
         boolean flagYesChoice = false;
         boolean flagNoChoice = false;
@@ -382,8 +386,8 @@ public class Program {
     private Bank bankInitialization() throws WrongNameOrSurnameException, ParseException {
         Bank bank = new Bank();
         bank.setBankName("YOLO Bank");
-        File file = new File("src/main/java/com/company/files/Owners.txt");
-        BankOwner bankOwner = new BankOwner("Gleb", "Chekmezov", true);
+        File file = new File("src/main/resources/files/Owners.txt");
+        BankOwner bankOwner = new BankOwner("Gleb", "Chekmezov", "+380991109744", true);
         if (!file.exists() || file.length() == 0) {
             insertOwnerToFile(bankOwner, file);
         }
@@ -409,20 +413,306 @@ public class Program {
         return bank;
     }
 
-    private boolean findHuman(String tmp, String name, String surname) {
+    private boolean findHumanInString(String tmp, String name, String surname, String phoneNumber) {
         int idxName = tmp.indexOf("name");
         int idxSurname = tmp.indexOf("surname");
+        int idxPhone = tmp.indexOf("phoneNumber");
         int idxGalo4kaOne = tmp.indexOf('\'', idxName);
         int idxGalo4kaTwo = tmp.indexOf('\'', idxGalo4kaOne + 1);
         String tmpName = tmp.substring(idxGalo4kaOne + 1, idxGalo4kaTwo);
         idxGalo4kaOne = tmp.indexOf('\'', idxSurname);
         idxGalo4kaTwo = tmp.indexOf('\'', idxGalo4kaOne + 1);
         String tmpSurname = tmp.substring(idxGalo4kaOne + 1, idxGalo4kaTwo);
-        if (tmpSurname.equals(surname) && tmpName.equals(name)) {
+        idxGalo4kaOne = tmp.indexOf('\'', idxPhone);
+        idxGalo4kaTwo = tmp.indexOf('\'', idxGalo4kaOne + 1);
+        String tmpPhone = tmp.substring(idxGalo4kaOne + 1, idxGalo4kaTwo);
+        tmpPhone = tmpPhone.replaceAll("\\s+", "");
+        if(tmpPhone.equals(phoneNumber)) {
             return true;
         } else {
             return false;
         }
+//        if (tmpSurname.equals(surname) && tmpName.equals(name) && tmpPhone.equals(phoneNumber)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+    }
+
+    private boolean isAlredyAdded(String... items) {
+        String name;
+        String surname;
+        String phoneNumber;
+        Scanner scanner = new Scanner(System.in);
+        boolean findSomeone = false;
+        if (items == null || items.length == 0) {
+            logger.info("Please, enter your name: ");
+            name = scanner.nextLine().replaceAll("\\s+", "");
+            logger.info("Please, enter your surname: ");
+            surname = scanner.nextLine().replaceAll("\\s+", "");
+            logger.info("Please, enter your phone number: ");
+            phoneNumber = scanner.nextLine();
+        } else {
+            name = items[0];
+            surname = items[1];
+            phoneNumber = items[2];
+        }
+        boolean presentUserID = true;
+        boolean presentEmployeeID = true;
+        boolean presentUser = true;
+        boolean presentEmployee = true;
+
+        List<String> lines = new ArrayList<>();
+
+        try (Stream<String> lineStream = Files.newBufferedReader(
+                        Paths.get("src/main/resources/files/Users.txt"))
+                .lines()) {
+            lines = lineStream.collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (presentUserID) {
+            String tmp = null;
+            boolean found = false;
+            for(int i = 0; i < lines.size(); i++) {
+                tmp = lines.get(i);
+                found = findHumanInString(tmp, name, surname, phoneNumber);
+                if (found) {
+                    break;
+                }
+            }
+            if (found) {
+                presentUser = true;
+                dash("We found you as our User!");
+                findSomeone = true;
+                logger.info(tmp);
+                dash("Sorry, you can not do something with your account because we have some technical troubles. Try later :(");
+            } else {
+                presentUser = false;
+            }
+        }
+
+        if (!presentUser) {
+            try (Stream<String> lineStream = Files.newBufferedReader(
+                            Paths.get("src/main/resources/files/Employees.txt"))
+                    .lines()) {
+                lines = lineStream.collect(Collectors.toList());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            if (presentEmployeeID) {
+                String tmp = null;
+                boolean found = false;
+                for(int i = 0; i < lines.size(); i++) {
+                    tmp = lines.get(i);
+                    found = findHumanInString(tmp, name, surname, phoneNumber);
+                    if (found) {
+                        break;
+                    }
+                }
+                if (found) {
+                    presentEmployee = true;
+                    dash("We found you as our Employee!");
+                    findSomeone = true;
+                    logger.info(tmp);
+                    dash("Sorry, you can not do something with your account because you are our employee! Have a good day! ;)");
+                } else {
+                    presentEmployee = false;
+                }
+            }
+        }
+        return findSomeone;
+    }
+
+    private void workAfterInit(User user) {
+        Scanner scanner = new Scanner(System.in);
+        boolean switchCorrectlyChosen = false;
+        int choice = -1;
+        while (!switchCorrectlyChosen) {
+            dash("Your username is : " + user.getName());
+            dash("Do you want to work with ...");
+            dashForAnswer("My Bank Account (account)", "My Cards (cards)",
+                    "My Contribution (contribution)", "My Credit (credit)", "My Deposit (deposit)", "Exit");
+            String tmp = scanner.nextLine();
+            switch (tmp) {
+                case "account":
+                    choice = 1;
+                    switchCorrectlyChosen = true;
+                    break;
+                case "cards":
+                    choice = 2;
+                    switchCorrectlyChosen = true;
+                    break;
+                case "contribution":
+                    choice = 3;
+                    switchCorrectlyChosen = true;
+                    break;
+                case "credit":
+                    choice = 4;
+                    switchCorrectlyChosen = true;
+                    break;
+                case "deposit":
+                    choice = 5;
+                    switchCorrectlyChosen = true;
+                    break;
+                case "Exit":
+                    choice = 6;
+                    switchCorrectlyChosen = true;
+                    break;
+                default:
+                    dash("Try again :/");
+                    choice = -1;
+            }
+
+            if (choice == 6) {
+              // dash("Ok, goodbye");
+            }
+
+            if (choice == 1) {
+                if (user.getBankAccount() == null) {
+                    dash("You do not have bank account! Do you want to create it?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            user.addBankAccount();
+                            dash(user.getBankAccount().toString());
+                            switchCorrectlyChosen = false;
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                } else {
+                    dash("You have bank account already!");
+                    dash("Getting information...");
+                    dash(user.getBankAccount().toString());
+                    switchCorrectlyChosen = false;
+
+                }
+            }
+
+            if (choice == 2) {
+                if (user.getCards() == null || user.getCards().size() == 0) {
+                    dash("You do not have any cards. Do you want to add the card?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.addCard();
+                                dash(user.getCards().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                } else {
+                    dash("You have some cards. Wait a second...");
+                    dash(user.getCards().toString());
+                    dash("Do you want to add another one?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.addCard();
+                                dash(user.getCards().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                }
+            }
+
+            if (choice == 3) {
+                if (user.getContribution() == null) {
+                    dash("You do not have a contribution. Do you want to add it?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.addContribution();
+                                dash(user.getContribution().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                } else {
+                    dash("You have contribution already!");
+                    dash("Getting information...");
+                    dash(user.getContribution().toString());
+                    switchCorrectlyChosen = false;
+                }
+            }
+
+            if (choice == 4) {
+                if (user.getCredit() == null) {
+                    dash("You do not have a credit. Do you want to add it?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.addCredit();
+                                dash(user.getCredit().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                } else {
+                    dash("You have credit already!");
+                    dash("Getting information...");
+                    dash(user.getCredit().toString());
+                    switchCorrectlyChosen = false;
+                }
+            }
+
+            if (choice == 5) {
+                if (user.getDeposit() == null) {
+                    dash("You do not have a deposit. Do you want to add it?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.addDeposit();
+                                dash(user.getDeposit().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+                } else {
+                    dash("You have deposit already!");
+                    dash("Getting information...");
+                    dash(user.getDeposit().toString());
+                    switchCorrectlyChosen = false;
+                }
+            }
+        }
+
     }
 
     public void run() throws WrongNameOrSurnameException, ParseException {
@@ -465,77 +755,7 @@ public class Program {
         }
 
         if(flagYesChoice) {
-            logger.info("Please, enter your name: ");
-            String name = scanner.nextLine().replaceAll("\\s+", "");
-            logger.info("Please, enter your surname: ");
-            String surname = scanner.nextLine().replaceAll("\\s+", "");
-            logger.info("Please, enter your unique id: ");
-            int id = Integer.parseInt(scanner.nextLine().replaceAll("\\s+", ""));
-//            boolean present = bank.getUsers().stream().filter(o -> (o.getCurrentId() == id && o.getName().equals(name)
-//                    && o.getSurname().equals(surname))).findFirst().isPresent();
-//            boolean present = bank.getUsers().stream().anyMatch(o -> o.getCurrentId() == id && o.getName().equals(name)
-//                    && o.getSurname().equals(surname));
-
-            boolean presentUserID = true;
-            boolean presentEmployeeID = true;
-            boolean presentUser = true;
-            boolean presentEmployee = true;
-
-            List<String> lines = new ArrayList<>();
-
-            try (Stream<String> lineStream = Files.newBufferedReader(
-                    Paths.get("src/main/java/com/company/files/Users.txt"))
-                    .lines()) {
-                lines = lineStream.collect(Collectors.toList());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (lines.size() < id) {
-                presentUserID = false;
-                presentUser = false;
-            }
-
-            if (presentUserID) {
-                String tmp = lines.get(id - 1);
-                boolean found = findHuman(tmp, name, surname);
-                if (found) {
-                    presentUser = true;
-                    dash("We found you as our User!");
-                    logger.info(tmp);
-                } else {
-                    presentUser = false;
-                }
-            }
-
-            if (!presentUser) {
-                try (Stream<String> lineStream = Files.newBufferedReader(
-                                Paths.get("src/main/java/com/company/files/Employees.txt"))
-                        .lines()) {
-                    lines = lineStream.collect(Collectors.toList());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (lines.size() < id) {
-                    presentEmployeeID = false;
-                    presentEmployee = false;
-                }
-
-                if (presentEmployeeID) {
-                    String tmp = lines.get(id - 1);
-                    boolean found = findHuman(tmp, name, surname);
-                    if (found) {
-                        presentEmployee = true;
-                        dash("We found you as our Employee!");
-                        logger.info(tmp);
-                    } else {
-                        presentEmployee = false;
-                    }
-                }
-            }
-
-            if (!presentEmployee) {
+            if (!isAlredyAdded()) {
                 switchChoiceDoneCorrectly = false;
                 flagExitChoice = false;
                 flagYesChoice = false;
@@ -561,17 +781,22 @@ public class Program {
 
                 if (flagYesChoice) {
                     User user = creatingAnUser();
-                    bank.addUser(user);
-                    flagExitChoice = true;
-                    if (user.getCurrentId() == 100) {
-                        dash("You are our "+ user.getCurrentId() +"th user, so we decided to do you our Owner!!!");
-                        BankOwner owner = User.converter.convert(user);
-                        insertOwnerToFile(owner, new File("src/main/java/com/company/files/Owners.txt"));
-                        dash(owner.toString());
+                    if (user == null) {
+                        dash("We found a person with this personal information in our list. Please, " +
+                                "don't pretend to be someone else!");
                     } else {
-                        dash("We added you to list of user");
-                        insertUserToFile(user, new File("src/main/java/com/company/files/Users.txt"));
-                        dash(user.toString());
+                        flagExitChoice = true;
+                        if (user.getCurrentId() == 100) {
+                            dash("You are our " + user.getCurrentId() + "th user, so we decided to do you our Owner!!!");
+                            BankOwner owner = User.converter.convert(user);
+                            insertOwnerToFile(owner, new File("src/main/resources/files/Owners.txt"));
+                            dash(owner.toString());
+                        } else {
+                            dash("We added you to list of user");
+                            workAfterInit(user);
+                            insertUserToFile(user, new File("src/main/resources/files/Users.txt"));
+                            bank.addUser(user);
+                        }
                     }
 
                 }
@@ -579,7 +804,7 @@ public class Program {
             }
 
         }
-
+        // has not been ----
         if (flagNoChoice) {
             switchChoiceDoneCorrectly = false;
             while (!switchChoiceDoneCorrectly) {
@@ -602,19 +827,25 @@ public class Program {
                 }
             }
             if (flagYesChoice) {
-                User user = creatingAnUser();
-                bank.addUser(user);
-                flagExitChoice = true;
-                if (user.getCurrentId() == 100) {
-                    dash("You are our "+ user.getCurrentId() +"th user, so we decided to do you our Owner!!!");
-                    BankOwner owner = User.converter.convert(user);
-                    insertOwnerToFile(owner, new File("src/main/java/com/company/files/Owners.txt"));
-                    dash(owner.toString());
-                } else {
-                    dash("We added you to list of user");
-                    insertUserToFile(user, new File("src/main/java/com/company/files/Users.txt"));
-                    dash(user.toString());
-                }
+                    User user = creatingAnUser();
+                    if (user == null) {
+                        dash("We found a person with this personal information in our list. Please, " +
+                                "don't pretend to be someone else!");
+                    } else {
+                        flagExitChoice = true;
+                        if (user.getCurrentId() == 100) {
+                            dash("You are our " + user.getCurrentId() + "th user, so we decided to do you our Owner!!!");
+                            BankOwner owner = User.converter.convert(user);
+                            insertOwnerToFile(owner, new File("src/main/resources/files/Owners.txt"));
+                            dash(owner.toString());
+                        } else {
+                            dash("We added you to list of user");
+                            // dash(user.toString());
+                            workAfterInit(user);
+                            insertUserToFile(user, new File("src/main/resources/files/Users.txt"));
+                            bank.addUser(user);
+                        }
+                    }
             }
 
         }

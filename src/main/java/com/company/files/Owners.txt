@@ -1,1 +1,0 @@
-BankOwner{name='Gleb', surname='Chekmezov', ukrainian=true}
