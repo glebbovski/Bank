@@ -527,11 +527,12 @@ public class Program {
         return findSomeone;
     }
 
-    private void workAfterInit(User user) {
+    private void workAfterInit(User user, Bank bank) {
         Scanner scanner = new Scanner(System.in);
         boolean switchCorrectlyChosen = false;
         int choice = -1;
         while (!switchCorrectlyChosen) {
+            dash("If you want to change current not null information, you need to go to the Issue Point: " + bank.getIssuePoints().toString());
             dash("Your username is : " + user.getName());
             dash("Do you want to work with ...");
             dashForAnswer("My Bank Account (account)", "My Cards (cards)",
@@ -793,7 +794,7 @@ public class Program {
                             dash(owner.toString());
                         } else {
                             dash("We added you to list of user");
-                            workAfterInit(user);
+                            workAfterInit(user, bank);
                             insertUserToFile(user, new File("src/main/resources/files/Users.txt"));
                             bank.addUser(user);
                         }
@@ -841,7 +842,7 @@ public class Program {
                         } else {
                             dash("We added you to list of user");
                             // dash(user.toString());
-                            workAfterInit(user);
+                            workAfterInit(user, bank);
                             insertUserToFile(user, new File("src/main/resources/files/Users.txt"));
                             bank.addUser(user);
                         }

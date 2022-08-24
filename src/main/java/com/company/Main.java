@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) throws WrongNameOrSurnameException, ParseException {
          Program program = new Program();
-         program.bankInfo(new File("README_BANK.txt"));
+         program.bankInfo(new File("src/main/resources/files/README_BANK.txt"));
          program.run();
 
 //        try {

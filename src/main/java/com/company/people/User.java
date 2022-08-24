@@ -34,7 +34,7 @@ public class User extends Human implements Openable {
     {
         List<String> lines = new ArrayList<>();
         try (Stream<String> lineStream = Files.newBufferedReader(
-                        Paths.get("src/main/java/com/company/files/Users.txt"))
+                        Paths.get("src/main/resources/files/Users.txt"))
                 .lines()) {
             lines = lineStream.collect(Collectors.toList());
         } catch (IOException e) {
