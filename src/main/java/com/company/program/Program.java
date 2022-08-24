@@ -532,11 +532,10 @@ public class Program {
         boolean switchCorrectlyChosen = false;
         int choice = -1;
         while (!switchCorrectlyChosen) {
-            dash("If you want to change current not null information, you need to go to the Issue Point: " + bank.getIssuePoints().toString());
             dash("Your username is : " + user.getName());
             dash("Do you want to work with ...");
-            dashForAnswer("My Bank Account (account)", "My Cards (cards)",
-                    "My Contribution (contribution)", "My Credit (credit)", "My Deposit (deposit)", "Exit");
+            dashForAnswer("account", "cards",
+                    "contribution", "credit", "deposit", "exit");
             String tmp = scanner.nextLine();
             switch (tmp) {
                 case "account":
@@ -559,7 +558,7 @@ public class Program {
                     choice = 5;
                     switchCorrectlyChosen = true;
                     break;
-                case "Exit":
+                case "exit":
                     choice = 6;
                     switchCorrectlyChosen = true;
                     break;
@@ -580,6 +579,7 @@ public class Program {
                     switch (tmp) {
                         case "yes":
                             user.addBankAccount();
+                            dash("Done");
                             dash(user.getBankAccount().toString());
                             switchCorrectlyChosen = false;
                             break;
@@ -590,8 +590,18 @@ public class Program {
                     dash("You have bank account already!");
                     dash("Getting information...");
                     dash(user.getBankAccount().toString());
-                    switchCorrectlyChosen = false;
-
+                    dash("Do you want to close your bank account?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            user.setBankAccount(null);
+                            dash("Done");
+                            switchCorrectlyChosen = false;
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
                 }
             }
 
@@ -604,6 +614,7 @@ public class Program {
                         case "yes":
                             try {
                                 user.addCard();
+                                dash("Done");
                                 dash(user.getCards().toString());
                                 switchCorrectlyChosen = false;
                             } catch (Exception e) {
@@ -623,6 +634,7 @@ public class Program {
                         case "yes":
                             try {
                                 user.addCard();
+                                dash("Done");
                                 dash(user.getCards().toString());
                                 switchCorrectlyChosen = false;
                             } catch (Exception e) {
@@ -644,6 +656,7 @@ public class Program {
                         case "yes":
                             try {
                                 user.addContribution();
+                                dash("Done");
                                 dash(user.getContribution().toString());
                                 switchCorrectlyChosen = false;
                             } catch (Exception e) {
@@ -662,7 +675,7 @@ public class Program {
             }
 
             if (choice == 4) {
-                if (user.getCredit() == null) {
+                if (user.getCredit() == null || user.getCredit().getCurrentCredit() == 0) {
                     dash("You do not have a credit. Do you want to add it?");
                     dashForAnswer("yes", "no or any other characters to go back");
                     tmp = scanner.nextLine().replaceAll("\\s+", "");
@@ -670,6 +683,7 @@ public class Program {
                         case "yes":
                             try {
                                 user.addCredit();
+                                dash("Done");
                                 dash(user.getCredit().toString());
                                 switchCorrectlyChosen = false;
                             } catch (Exception e) {
@@ -683,12 +697,39 @@ public class Program {
                     dash("You have credit already!");
                     dash("Getting information...");
                     dash(user.getCredit().toString());
+                    dash("Do you want to make a payment?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                logger.info("Please, enter the payment amount: ");
+                                int amount = Integer.parseInt(scanner.nextLine());
+                                if (amount > 0) {
+                                    user.getCredit().setCurrentCredit(user.getCredit().getCurrentCredit() - amount);
+                                    if (user.getCredit().getCurrentCredit() <= 0) {
+                                        user.getCredit().setCurrentCredit(0);
+                                        dash("Congratulations!!! You paid off the entire credit!");
+                                    }
+                                    dash("Done");
+                                } else {
+                                    logger.info("You cannot enter a negative value");
+                                }
+                                dash(user.getCredit().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
                     switchCorrectlyChosen = false;
                 }
             }
 
             if (choice == 5) {
-                if (user.getDeposit() == null) {
+                if (user.getDeposit() == null || user.getDeposit().getDepositAmount() == 0) {
                     dash("You do not have a deposit. Do you want to add it?");
                     dashForAnswer("yes", "no or any other characters to go back");
                     tmp = scanner.nextLine().replaceAll("\\s+", "");
@@ -696,6 +737,7 @@ public class Program {
                         case "yes":
                             try {
                                 user.addDeposit();
+                                dash("Done");
                                 dash(user.getDeposit().toString());
                                 switchCorrectlyChosen = false;
                             } catch (Exception e) {
@@ -709,7 +751,24 @@ public class Program {
                     dash("You have deposit already!");
                     dash("Getting information...");
                     dash(user.getDeposit().toString());
-                    switchCorrectlyChosen = false;
+                    dash("Do you want to take back your deposit?");
+                    dashForAnswer("yes", "no or any other characters to go back");
+                    tmp = scanner.nextLine().replaceAll("\\s+", "");
+                    switch (tmp) {
+                        case "yes":
+                            try {
+                                user.setDeposit(new Deposit(0));
+                                dash("Done");
+                                dash(user.getDeposit().toString());
+                                switchCorrectlyChosen = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            switchCorrectlyChosen = false;
+                    }
+
                 }
             }
         }
