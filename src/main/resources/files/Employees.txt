@@ -1,0 +1,4 @@
+Employee{name='Abobus', surname='Abobusov', phoneNumber='+380914228925', position='Driver', salary=20000, currentId=1}, hasDriverLicense=true}
+Employee{name='Evgeniy', surname='Alexandrov', phoneNumber='+380925926726', position='Director', salary=60000, currentId=2}, yearsOfWorkExperience=20}
+Employee{name='Briona', surname='Fagetova', phoneNumber='+380927113254', position='Cashier', salary=15000, currentId=3}, cashDeskNumber=3}
+Employee{name='Fiona', surname='Bergeret', phoneNumber='+380673717845', position='Cashier', salary=15000, currentId=4}, cashDeskNumber=2}

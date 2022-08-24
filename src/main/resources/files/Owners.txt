@@ -1,0 +1,1 @@
+Human{name='Gleb', surname='Chekmezov', phoneNumber='+380991109744'}, isUkrainian=true}
